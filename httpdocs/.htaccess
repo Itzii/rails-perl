@@ -1,0 +1,35 @@
+<Files ~ (\.pl)>
+	Options ExecCGI FollowSymLinks
+</Files>
+Options +FollowSymLinks +SymLinksIfOwnerMatch
+
+
+# Re-route application requests to the proper script
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/handle$
+RewriteRule ^(.*)$ cgi-bin/handle_shipping.pl [L]
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/handle_po$
+RewriteRule ^(.*)$ cgi-bin/handle_shipping.pl?for_pos=1 [L]
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/logout$
+RewriteRule ^(.*)$ cgi-bin/handle_logout.pl [L]
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/timeclock$
+RewriteRule ^(.*)$ cgi-bin/timeclock.pl [L]
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/manage$
+RewriteRule ^(.*)$ cgi-bin/manage.pl [L]
+
+
+#Redirect any requests in template directory to base
+RedirectMatch permanent ^/templates/.*$ /

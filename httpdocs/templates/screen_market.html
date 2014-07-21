@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>1830 Stock Market - <tmpl_var name="s_name"></title>
+	<link href="/css/rails.css" rel="stylesheet">
+	<script src="/js/common.js"></script>	
+	<script src="/js/screen.js"></script>
+</head>
+<body style="margin:0px 0px" bgcolor="FFFEEC">
+
+<input type="hidden" id="stamp" value="<tmpl_var name="stamp">">
+<input type="hidden" id="host" value="<tmpl_var name="host">">
+<input type="hidden" id="script" value="<tmpl_var name="script">">
+<input type="hidden" id="gid" value="<tmpl_var name="gid">">
+<input type="hidden" id="pid" value="<tmpl_var name="pid">">
+
+<img src="/images/market.png" style="position:absolute; top:5px; left:5px;">
+
+<tmpl_loop name="stock_prices">
+<img src="/images/token_<tmpl_var name="l_key">.png" style="position:absolute; top:<tmpl_var name="l_top">px; left:<tmpl_var name="l_left">px; width=50px; z-index:<tmpl_var name="l_position">; -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+<tmpl_loop name="par_values">
+<img src="/images/token_<tmpl_var name="l_key">.png" style="position:absolute; top:<tmpl_var name="l_top">px; left:<tmpl_var name="l_left">px; width=50px; z-index:<tmpl_var name="l_position">; -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+<tmpl_loop name="stock_pool">
+<img src="/images/stock_<tmpl_if name="l_pres"><tmpl_var name="l_key">_2.png<tmpl_else><tmpl_var name="l_key">_1.png</tmpl_if>" style="position:absolute; top:<tmpl_var name="l_top">px; left:<tmpl_var name="l_left">px; width:200px; z-index:<tmpl_var name="l_position">; -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+<tmpl_loop name="bank_pool_stock">
+<img src="/images/stock_<tmpl_var name="l_key">_1.png" style="position:absolute; top:<tmpl_var name="l_top">px; left:<tmpl_var name="l_left">px; width=200px; z-index:<tmpl_var name="l_position">; -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+<tmpl_loop name="bank_pool_trains">
+<img src="/images/train_<tmpl_var name="l_key">.png" style="position:absolute; top:<tmpl_var name="l_top">px; left:<tmpl_var name="l_left">px; width=200px; z-index:<tmpl_var name="l_position">; -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+<tmpl_loop name="trains">
+<img src="/images/train_<tmpl_var name="l_key">.png" style="position:absolute; top:<tmpl_var name="l_top">px; left:<tmpl_var name="l_left">px; width=200px; z-index:<tmpl_var name="l_position">; -webkit-filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+
+<div style="position:absolute; top:20px; left:20px; z-index:20"><tmpl_var name="bank"></div>
+
+
+</body>
+</html>

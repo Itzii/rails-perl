@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>1830 Map - <tmpl_var name="s_name"></title>
+	<link href="/css/rails.css" rel="stylesheet">
+	<script src="/js/common.js"></script>	
+	<script src="/js/screen.js"></script>
+</head>
+<body style="margin:0px 0px" bgcolor="FFFEEC">
+
+<input type="hidden" id="stamp" value="<tmpl_var name="stamp">">
+<input type="hidden" id="host" value="<tmpl_var name="host">">
+<input type="hidden" id="script" value="<tmpl_var name="script">">
+<input type="hidden" id="gid" value="<tmpl_var name="gid">">
+<input type="hidden" id="pid" value="<tmpl_var name="pid">">
+
+<img src="/images/map.png" style="position:absolute; top:5px; left:5px; z-index: 0px;">
+
+<tmpl_loop name="hexes">
+<img src="/images/tile<tmpl_var name="tid">.png" style="position:absolute; top:<tmpl_var name="ttop">px; left:<tmpl_var name="tleft">px; width:<tmpl_var name="twidth">px; z-index:2; -webkit-transform:rotate(-<tmpl_var name="trotation">deg); -moz-transform:rotate(-<tmpl_var name="trotation">deg); filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=<tmpl_var name="trotation2">); -webkit-filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));">
+</tmpl_loop>
+
+<img src="/images/spinning.gif" style="position:absolute; top:<tmpl_var name="stop">px; left:<tmpl_var name="sleft">px;">
+
+<tmpl_if name="show_stock">
+<tmpl_loop name="stock">
+<div style="position:absolute; top:<tmpl_var name="ltop">px; left:<tmpl_var name="lleft">px; width:<tmpl_var name="lwidth">px; z-index: 2;">
+<p align="center" class="<tmpl_if name="l_current">BigPlayerNameHighLight<tmpl_else>BigPlayerName</tmpl_if>"><tmpl_var name="l_name"></p>
+</div>
+</tmpl_loop>
+</tmpl_if>
+
+<tmpl_if name="show_operating">
+
+</tmpl_if>
+
+</body>
+</html>

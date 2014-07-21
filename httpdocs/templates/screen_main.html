@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>1830 Sessions <tmpl_var name="s_name"></title>
+	<link href="/css/rails.css" rel="stylesheet">
+	<script src="/js/common.js"></script>	
+	<script src="/js/screen.js"></script>
+</head>
+<body style="margin:0px 0px" bgcolor="FFFEEC">
+
+<input type="hidden" id="stamp" value="<tmpl_var name="stamp">">
+<input type="hidden" id="host" value="<tmpl_var name="host">">
+<input type="hidden" id="script" value="<tmpl_var name="script">">
+<input type="hidden" id="gid" value="<tmpl_var name="gid">">
+<input type="hidden" id="pid" value="<tmpl_var name="pid">">
+
+
+
+<tmpl_if name="show_main">
+<ul>
+<tmpl_loop name="game_list">
+	<li> <a href="<tmpl_var name="script">?action=game_main&gid=<tmpl_var name="l_gid">"><tmpl_var name="l_name"><tmpl_var name="l_completed"></a></li>
+</tmpl_loop>
+</ul>
+</tmpl_if>
+
+<tmpl_if name="show_game">
+<ul>
+	<li> <a href="/cgi-bin/screen_map.pl?gid=<tmpl_var name="gid">">Map</a></li>
+	<li> <a href="/cgi-bin/screen_market.pl?gid=<tmpl_var name="gid">">Market</a></li>
+<tmpl_loop name="game_list">
+	<li> <a href="/cgi-bin/screen_player.pl?gid=<tmpl_var name="gid">&pid=<tmpl_var name="l_pid">"><tmpl_var name="l_name"></a></li>
+</tmpl_loop>
+</ul>
+
+</tmpl_if>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>1830 Player Screen - <tmpl_var name="s_name"></title>
+	<link href="/css/rails.css" rel="stylesheet">
+	<script src="/js/common.js"></script>	
+	<script src="/js/screen.js"></script>
+	<script src="/js/player.js"></script>
+</head>
+<body style="margin:0px 0px" bgcolor="FFFEEC">
+
+<input type="hidden" id="stamp" value="<tmpl_var name="stamp">">
+<input type="hidden" id="host" value="<tmpl_var name="host">">
+<input type="hidden" id="script" value="<tmpl_var name="script">">
+<input type="hidden" id="gid" value="<tmpl_var name="gid">">
+<input type="hidden" id="pid" value="<tmpl_var name="pid">">
+
+<tmpl_if name="show_change_name">
+	<form method="POST" action="/cgi-bin/screen_player.pl">
+	<input type="text" name="new_name" size="30" maxlength="30">
+	<input type="hidden" name="action" value="set_name">"
+	<input type="hidden" name="gid" value="<tmpl_var name="gid">">
+	<input type="hidden" name="pid" value="<tmpl_var name="pid">">
+	<input type="submit" value="Submit">
+	</form>
+</tmpl_if>
+
+<tmpl_if name="show_privates">
+	<input type="hidden" id="pid" value="<tmpl_var name="pid">">
+	<input type="hidden" id="private_for_sale\" value="<tmpl_var name="private_for_sale">">
+	<input type="hidden" id="maxbid" value="<tmpl_var name="max_bid">">
+
+	<tmpl_loop name="min_bids">
+		<input type="hidden" id="minbid_<tmpl_var name="private_key">" value="<tmpl_var name="private_min_bid">">
+	</tmpl_loop>
+
+	<table width="100%">
+		<tr>
+			<th><span class="PlayerMoney"><tmpl_var name="player_money"></span></th>
+			<tmpl_loop name="players">
+				<th class="PrivatesTableHeader"><span class="<tmpl_if name="other_current">SmallPlayerNameHighLight<tmpl_else>SmallPlayerName</tmpl_if>"><tmpl_var name="other_name"><br><tmpl_var name="other_cash"></span></th>
+			</tmpl_loop>
+		</tr>
+		<tmpl_loop name="privates">
+		<tr>
+			<tmpl_if name="private_available">
+				<td><a href="#" onclick="javascript:show_selected('<tmpl_var name="private">');"><img src="/images/private_<tmpl_var name="private_tag">.png" class="MediumPrivate"></a></td>
+			<tmpl_else>
+				<td>&nbsp;</td>
+			</tmpl_if>
+			<tmpl_loop name="privates_inner">
+				<td class="PrivatesTableCell">
+				<tmpl_if name="private_available">
+					<tmpl_if name="valid_bidder">
+						<span class="PlayerBid"><tmpl_var name="current_bid"></span>
+					<tmpl_else>
+						&nbsp;
+					</tmpl_if>
+				<tmpl_else>
+					<tmpl_if name="private_owned">
+						<a href="#" onclick="javascript:show_selected('<tmpl_var name="private">');"><img src="/images/private_<tmpl_var name="private_tag">.png" class="SmallPrivate"></a>
+					<tmpl_else>
+						&nbsp;
+					</tmpl_if>
+				</tmpl_if>
+				</td>		
+			</tmpl_loop>	
+		</tr>	
+		</tmpl_loop>
+	</table>
+
+	<table width="100%">
+		<tr>
+			<td>
+				<img id="selected_image" class="LargePrivateVisible" src="/images/private_<tmpl_var name="private_tag">.png">
+			</td>
+			<td>
+				<tmpl_loop name="flavor">
+					<div id="flavor_<tmpl_var name="private">" style="display: <tmpl_if name="for_sale">inline<tmpl_else>none</tmpl_if>; vertical-align: top;"><span class="FlavorText"><tmpl_var name="flavor_text"></span></div>
+				</tmpl_loop>
+			</td>
+			<tmpl_if name="is_current_player">
+				<td align="center" width="200px">
+					<div id="buy_private" style="display: none;"><a class="Button" href="#" onclick="javascript:buy();">BUY <span id="buy_amount"></span></a></div>
+					<div id="bid_private" style="display: none;">
+						<a class="RaiseBidButton" id="raise_bid" href="#" onclick="javascript:raise_bid();">+$5</a>
+						<br><br><a class="Button" href="#" onclick="javascript:bid();">BID <span id="bid_amount"></span></a>
+						<br><br><a class="LowerBidButton"  id="lower_bid" style="display: none;" href="#" onclick="javascript:lower_bid();">-$5</a>
+					</div>
+				</td>		
+				<td><a class="Button" href="#" onclick="javascript:pass();">PASS</a></td>
+			<tmpl_else>
+				<td align="center" width="200px">&nbsp;</td>		
+				<td align="center" width="200px">&nbsp;</td>
+			</tmpl_if>
+		</tr>
+	</table>	
+
+
+</tmpl_if>
+
+<tmpl_if name="show_stock">
+
+
+</tmpl_if>
+
+<tmpl_if name="show_operating">
+
+
+</tmpl_if>
+
+</body>
+</html>
