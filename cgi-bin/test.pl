@@ -15,6 +15,7 @@ my $_database	= 'test.sqlite';
 my $_login		= '';
 my $_password	= '';
 
+my $_test_id	= 'TiXsVnVlCEB6';
 
 my %_args = ();
 
@@ -41,6 +42,10 @@ my $connection = test_Base_Objects_Connection();
 
 
 test_Base_Methods_Session();
+
+test_Rails_Objects_Route();
+test_Rails_Objects_RouteList();
+
 test_Base_Objects_Connectable( $connection );
 test_Base_Objects_Base( $connection );
 test_Base_Objects_Base_List( $connection );
@@ -48,10 +53,23 @@ test_Base_Objects_Screen( $connection );
 
 test_Rails_Objects_Base( $connection );
 test_Rails_Objects_Holder( $connection );
+test_Rails_Objects_Player( $connection );
+test_Rails_Objects_Corp( $connection );
+
+test_Rails_Objects_Tile( $connection );
+test_Rails_Objects_TileSet( $connection );
+
+test_Rails_Objects_MapSpace( $connection );
+test_Rails_Objects_Map( $connection );
+
+test_Rails_Objects_Game( $connection );
 
 
 
 test_Rails_Methods_Privates();
+
+
+engine_testing( $connection );
 
 done_testing();
 
@@ -85,167 +103,167 @@ sub setup_dummy_data {
 
 	$connection->simple_exec(
 		"INSERT INTO state_change_stamps ( id, game_id, stamp_name, stamp_value ) VALUES
-			(52,'TiXsVnVlCEB6','player_0',0),
-			(53,'TiXsVnVlCEB6','player_1',0),
-			(54,'TiXsVnVlCEB6','player_2',0),
-			(55,'TiXsVnVlCEB6','player_3',0),
-			(56,'TiXsVnVlCEB6','player_4',0),
-			(57,'TiXsVnVlCEB6','player_5',0),
-			(58,'TiXsVnVlCEB6','map',15),
-			(59,'TiXsVnVlCEB6','market',0),
-			(60,'TiXsVnVlCEB6','auction',0),
+			(52,'$_test_id','player_0',0),
+			(53,'$_test_id','player_1',0),
+			(54,'$_test_id','player_2',0),
+			(55,'$_test_id','player_3',0),
+			(56,'$_test_id','player_4',0),
+			(57,'$_test_id','player_5',0),
+			(58,'$_test_id','map',15),
+			(59,'$_test_id','market',0),
+			(60,'$_test_id','auction',0),
 			(61,'','',0)
 		"
 	);
 
 	$connection->simple_exec(
 		"INSERT INTO state_corps ( id, game_id, corp_id, cash, trains, privates, stations, shares, par_price, current_price, current_index, current_position ) VALUES
-			(1,'TiXsVnVlCEB6','prr',0,'','','0,40,100,100','prr,10',0,0,0,'-1,-1'),
-			(2,'TiXsVnVlCEB6','cpr',0,'','','0,40,100,100','cpr,10',0,0,0,'-1,-1'),
-			(3,'TiXsVnVlCEB6','nyc',0,'','','0,40,100,100','nyc,10',0,0,0,'-1,-1'),
-			(4,'TiXsVnVlCEB6','bo',0,'','','0,40,100','bo,10',0,0,0,'-1,-1'),
-			(5,'TiXsVnVlCEB6','bm',0,'','','0,40','bm,10',0,0,0,'-1,-1'),
-			(6,'TiXsVnVlCEB6','nnh',0,'','','0,40','nnh,10',0,0,0,'-1,-1'),
-			(7,'TiXsVnVlCEB6','co',0,'','','0,40,100','co,10',0,0,0,'-1,-1'),
-			(8,'TiXsVnVlCEB6','erie',0,'','','0,40,100','erie,10',0,0,0,'-1,-1')
+			(1,'$_test_id','prr',0,'','','0,40,100,100','prr,10',0,0,0,'-1,-1'),
+			(2,'$_test_id','cpr',0,'','','0,40,100,100','cpr,10',0,0,0,'-1,-1'),
+			(3,'$_test_id','nyc',0,'','','0,40,100,100','nyc,10',0,0,0,'-1,-1'),
+			(4,'$_test_id','bo',0,'','','0,40,100','bo,10',0,0,0,'-1,-1'),
+			(5,'$_test_id','bm',0,'','','0,40','bm,10',0,0,0,'-1,-1'),
+			(6,'$_test_id','nnh',0,'','','0,40','nnh,10',0,0,0,'-1,-1'),
+			(7,'$_test_id','co',0,'','','0,40,100','co,10',0,0,0,'-1,-1'),
+			(8,'$_test_id','erie',0,'','','0,40,100','erie,10',0,0,0,'-1,-1')
 		"
 	);
 
 	$connection->simple_exec(
 		"INSERT INTO state_game ( id, cash, shares, privates, trains, current_phase, next_phase, current_round, current_player, game_name, prioritydeal_player, player_count, depreciate_private, auction_players, corp_turns, new_trains ) VALUES
-			('TiXsVnVlCEB6',9600,'','5_bo,4_ca,0_sv,1_cs,3_mh,2_dh','',-1,-1,0,5,'3Yoc5W3oTgEo',5,6,0,'','','2,2,2,2,2,2')
+			('$_test_id',9600,'','5_bo,4_ca,0_sv,1_cs,3_mh,2_dh','',-1,-1,0,5,'3Yoc5W3oTgEo',5,6,0,'','','2,2,2,2,2,2')
 		"
 	);
 
 	$connection->simple_exec(
 		"INSERT INTO state_players ( id, game_id, player_id, long_name, cash, shares, privates, running, pass_flag, sold, bought ) VALUES
-			(1,'TiXsVnVlCEB6',0,'Tom',400,'','','',0,'',''),
-			(2,'TiXsVnVlCEB6',1,'',400,'','','',0,'',''),
-			(3,'TiXsVnVlCEB6',2,'',400,'','','',0,'',''),
-			(4,'TiXsVnVlCEB6',3,'',400,'','','',0,'',''),
-			(5,'TiXsVnVlCEB6',4,'',400,'','','',0,'',''),
-			(6,'TiXsVnVlCEB6',5,'Sam',400,'','','',0,'','')
+			(1,'$_test_id',0,'Tom',400,'','','',0,'',''),
+			(2,'$_test_id',1,'',400,'','','',0,'',''),
+			(3,'$_test_id',2,'',400,'','','',0,'',''),
+			(4,'$_test_id',3,'',400,'','','',0,'',''),
+			(5,'$_test_id',4,'',400,'','','',0,'',''),
+			(6,'$_test_id',5,'Sam',400,'','','',0,'','')
 		"
 	);
 
 	$connection->simple_exec(
 		"INSERT INTO state_stations ( id, game_id, space_id, station_id, slot_id, corp ) VALUES
-			(865,'TiXsVnVlCEB6','G19','city2',0,''),
-			(866,'TiXsVnVlCEB6','G19','city1',0,''),
-			(867,'TiXsVnVlCEB6','H18','city2',0,''),
-			(868,'TiXsVnVlCEB6','H18','city1',0,''),
-			(869,'TiXsVnVlCEB6','A19','city1',0,''),
-			(870,'TiXsVnVlCEB6','D14','city1',0,''),
-			(871,'TiXsVnVlCEB6','H12','city1',0,''),
-			(872,'TiXsVnVlCEB6','I15','city1',0,''),
-			(873,'TiXsVnVlCEB6','F6','city1',0,''),
-			(874,'TiXsVnVlCEB6','D10','city2',0,''),
-			(875,'TiXsVnVlCEB6','D10','city1',0,''),
-			(876,'TiXsVnVlCEB6','E11','city2',0,''),
-			(877,'TiXsVnVlCEB6','E11','city1',0,''),
-			(878,'TiXsVnVlCEB6','K15','city1',0,''),
-			(879,'TiXsVnVlCEB6','E23','city1',0,''),
-			(880,'TiXsVnVlCEB6','D2','city1',0,''),
-			(881,'TiXsVnVlCEB6','E5','city2',0,''),
-			(882,'TiXsVnVlCEB6','E5','city1',0,'')
+			(865,'$_test_id','G19','city2',0,''),
+			(866,'$_test_id','G19','city1',0,''),
+			(867,'$_test_id','H18','city2',0,''),
+			(868,'$_test_id','H18','city1',0,''),
+			(869,'$_test_id','A19','city1',0,''),
+			(870,'$_test_id','D14','city1',0,''),
+			(871,'$_test_id','H12','city1',0,''),
+			(872,'$_test_id','I15','city1',0,''),
+			(873,'$_test_id','F6','city1',0,''),
+			(874,'$_test_id','D10','city2',0,''),
+			(875,'$_test_id','D10','city1',0,''),
+			(876,'$_test_id','E11','city2',0,''),
+			(877,'$_test_id','E11','city1',0,''),
+			(878,'$_test_id','K15','city1',0,''),
+			(879,'$_test_id','E23','city1',0,''),
+			(880,'$_test_id','D2','city1',0,''),
+			(881,'$_test_id','E5','city2',0,''),
+			(882,'$_test_id','E5','city1',0,'')
 		"
 	);
 	
 	$connection->simple_exec(
 		"INSERT INTO state_tile_locations ( id, game_id, space_id, tile_id, orientation ) VALUES
-			(3164,'TiXsVnVlCEB6','E15','0',0),
-			(3165,'TiXsVnVlCEB6','F16','-10',0),
-			(3166,'TiXsVnVlCEB6','I11','0',0),
-			(3167,'TiXsVnVlCEB6','E13','0',0),
-			(3168,'TiXsVnVlCEB6','E21','0',0),
-			(3169,'TiXsVnVlCEB6','C11','0',0),
-			(3170,'TiXsVnVlCEB6','J2','-902',5),
-			(3171,'TiXsVnVlCEB6','I5','0',0),
-			(3172,'TiXsVnVlCEB6','E9','-7',4),
-			(3173,'TiXsVnVlCEB6','G7','55',0),
-			(3174,'TiXsVnVlCEB6','G19','-21',1),
-			(3175,'TiXsVnVlCEB6','D24','-7',2),
-			(3176,'TiXsVnVlCEB6','D18','0',0),
-			(3177,'TiXsVnVlCEB6','E7','-1',0),
-			(3178,'TiXsVnVlCEB6','F8','8',4),
-			(3179,'TiXsVnVlCEB6','H18','-20',0),
-			(3180,'TiXsVnVlCEB6','H16','-10',0),
-			(3181,'TiXsVnVlCEB6','A17','-7',1),
-			(3182,'TiXsVnVlCEB6','B18','0',0),
-			(3183,'TiXsVnVlCEB6','C17','0',0),
-			(3184,'TiXsVnVlCEB6','A19','-103',1),
-			(3185,'TiXsVnVlCEB6','H8','23',1),
-			(3186,'TiXsVnVlCEB6','B10','-10',0),
-			(3187,'TiXsVnVlCEB6','G11','0',0),
-			(3188,'TiXsVnVlCEB6','J8','0',0),
-			(3189,'TiXsVnVlCEB6','B14','0',0),
-			(3190,'TiXsVnVlCEB6','D6','0',0),
-			(3191,'TiXsVnVlCEB6','D20','0',0),
-			(3192,'TiXsVnVlCEB6','C19','0',0),
-			(3193,'TiXsVnVlCEB6','D14','-102',0),
-			(3194,'TiXsVnVlCEB6','F2','-903',5),
-			(3195,'TiXsVnVlCEB6','D8','0',0),
-			(3196,'TiXsVnVlCEB6','B24','-902',2),
-			(3197,'TiXsVnVlCEB6','E3','46',2),
-			(3198,'TiXsVnVlCEB6','F24','-3',2),
-			(3199,'TiXsVnVlCEB6','H12','-101',0),
-			(3200,'TiXsVnVlCEB6','I15','-11',0),
-			(3201,'TiXsVnVlCEB6','D22','0',0),
-			(3202,'TiXsVnVlCEB6','J12','0',0),
-			(3203,'TiXsVnVlCEB6','G13','0',0),
-			(3204,'TiXsVnVlCEB6','H4','63',3),
-			(3205,'TiXsVnVlCEB6','F6','-105',0),
-			(3206,'TiXsVnVlCEB6','J10','0',0),
-			(3207,'TiXsVnVlCEB6','D10','-20',0),
-			(3208,'TiXsVnVlCEB6','C15','-58',2),
-			(3209,'TiXsVnVlCEB6','E19','-10',0),
-			(3210,'TiXsVnVlCEB6','H6','24',1),
-			(3211,'TiXsVnVlCEB6','I1','-901',5),
-			(3212,'TiXsVnVlCEB6','H14','0',0),
-			(3213,'TiXsVnVlCEB6','B22','0',0),
-			(3214,'TiXsVnVlCEB6','G3','0',0),
-			(3215,'TiXsVnVlCEB6','I17','0',0),
-			(3216,'TiXsVnVlCEB6','A11','-902',1),
-			(3217,'TiXsVnVlCEB6','D16','0',0),
-			(3218,'TiXsVnVlCEB6','J14','-10',0),
-			(3219,'TiXsVnVlCEB6','E17','0',0),
-			(3220,'TiXsVnVlCEB6','E11','59',0),
-			(3221,'TiXsVnVlCEB6','K15','-104',3),
-			(3222,'TiXsVnVlCEB6','H2','7',4),
-			(3223,'TiXsVnVlCEB6','C13','0',0),
-			(3224,'TiXsVnVlCEB6','J6','0',0),
-			(3225,'TiXsVnVlCEB6','F10','58',1),
-			(3226,'TiXsVnVlCEB6','B16','-10',0),
-			(3227,'TiXsVnVlCEB6','E23','-11',5),
-			(3228,'TiXsVnVlCEB6','F4','57',5),
-			(3229,'TiXsVnVlCEB6','C9','0',0),
-			(3230,'TiXsVnVlCEB6','D2','-5',0),
-			(3231,'TiXsVnVlCEB6','I7','0',0),
-			(3232,'TiXsVnVlCEB6','G17','-2',0),
-			(3233,'TiXsVnVlCEB6','G9','0',0),
-			(3234,'TiXsVnVlCEB6','I13','0',0),
-			(3235,'TiXsVnVlCEB6','I19','-3',2),
-			(3236,'TiXsVnVlCEB6','B20','-1',0),
-			(3237,'TiXsVnVlCEB6','F22','-10',0),
-			(3238,'TiXsVnVlCEB6','G5','26',0),
-			(3239,'TiXsVnVlCEB6','I9','0',0),
-			(3240,'TiXsVnVlCEB6','F14','0',0),
-			(3241,'TiXsVnVlCEB6','I3','16',0),
-			(3242,'TiXsVnVlCEB6','C7','0',0),
-			(3243,'TiXsVnVlCEB6','D4','58',5),
-			(3244,'TiXsVnVlCEB6','H10','57',1),
-			(3245,'TiXsVnVlCEB6','F20','-2',0),
-			(3246,'TiXsVnVlCEB6','F18','0',0),
-			(3247,'TiXsVnVlCEB6','B12','0',0),
-			(3248,'TiXsVnVlCEB6','D12','0',0),
-			(3249,'TiXsVnVlCEB6','K13','-902',4),
-			(3250,'TiXsVnVlCEB6','G15','0',0),
-			(3251,'TiXsVnVlCEB6','F12','0',0),
-			(3252,'TiXsVnVlCEB6','C23','0',0),
-			(3253,'TiXsVnVlCEB6','E5','64',4),
-			(3254,'TiXsVnVlCEB6','J4','0',0),
-			(3255,'TiXsVnVlCEB6','A9','-901',1),
-			(3256,'TiXsVnVlCEB6','C21','0',0)
+			(3164,'$_test_id','E15','0',0),
+			(3165,'$_test_id','F16','-10',0),
+			(3166,'$_test_id','I11','0',0),
+			(3167,'$_test_id','E13','0',0),
+			(3168,'$_test_id','E21','0',0),
+			(3169,'$_test_id','C11','0',0),
+			(3170,'$_test_id','J2','-902',5),
+			(3171,'$_test_id','I5','0',0),
+			(3172,'$_test_id','E9','-7',4),
+			(3173,'$_test_id','G7','55',0),
+			(3174,'$_test_id','G19','-21',1),
+			(3175,'$_test_id','D24','-7',2),
+			(3176,'$_test_id','D18','0',0),
+			(3177,'$_test_id','E7','-1',0),
+			(3178,'$_test_id','F8','8',4),
+			(3179,'$_test_id','H18','-20',0),
+			(3180,'$_test_id','H16','-10',0),
+			(3181,'$_test_id','A17','-7',1),
+			(3182,'$_test_id','B18','0',0),
+			(3183,'$_test_id','C17','0',0),
+			(3184,'$_test_id','A19','-103',1),
+			(3185,'$_test_id','H8','23',1),
+			(3186,'$_test_id','B10','-10',0),
+			(3187,'$_test_id','G11','0',0),
+			(3188,'$_test_id','J8','0',0),
+			(3189,'$_test_id','B14','0',0),
+			(3190,'$_test_id','D6','0',0),
+			(3191,'$_test_id','D20','0',0),
+			(3192,'$_test_id','C19','0',0),
+			(3193,'$_test_id','D14','-102',0),
+			(3194,'$_test_id','F2','-903',5),
+			(3195,'$_test_id','D8','0',0),
+			(3196,'$_test_id','B24','-902',2),
+			(3197,'$_test_id','E3','46',2),
+			(3198,'$_test_id','F24','-3',2),
+			(3199,'$_test_id','H12','-101',0),
+			(3200,'$_test_id','I15','-11',0),
+			(3201,'$_test_id','D22','0',0),
+			(3202,'$_test_id','J12','0',0),
+			(3203,'$_test_id','G13','0',0),
+			(3204,'$_test_id','H4','63',3),
+			(3205,'$_test_id','F6','-105',0),
+			(3206,'$_test_id','J10','0',0),
+			(3207,'$_test_id','D10','-20',0),
+			(3208,'$_test_id','C15','-58',2),
+			(3209,'$_test_id','E19','-10',0),
+			(3210,'$_test_id','H6','24',1),
+			(3211,'$_test_id','I1','-901',5),
+			(3212,'$_test_id','H14','0',0),
+			(3213,'$_test_id','B22','0',0),
+			(3214,'$_test_id','G3','0',0),
+			(3215,'$_test_id','I17','0',0),
+			(3216,'$_test_id','A11','-902',1),
+			(3217,'$_test_id','D16','0',0),
+			(3218,'$_test_id','J14','-10',0),
+			(3219,'$_test_id','E17','0',0),
+			(3220,'$_test_id','E11','59',0),
+			(3221,'$_test_id','K15','-104',3),
+			(3222,'$_test_id','H2','7',4),
+			(3223,'$_test_id','C13','0',0),
+			(3224,'$_test_id','J6','0',0),
+			(3225,'$_test_id','F10','58',1),
+			(3226,'$_test_id','B16','-10',0),
+			(3227,'$_test_id','E23','-11',5),
+			(3228,'$_test_id','F4','57',5),
+			(3229,'$_test_id','C9','0',0),
+			(3230,'$_test_id','D2','-5',0),
+			(3231,'$_test_id','I7','0',0),
+			(3232,'$_test_id','G17','-2',0),
+			(3233,'$_test_id','G9','0',0),
+			(3234,'$_test_id','I13','0',0),
+			(3235,'$_test_id','I19','-3',2),
+			(3236,'$_test_id','B20','-1',0),
+			(3237,'$_test_id','F22','-10',0),
+			(3238,'$_test_id','G5','26',0),
+			(3239,'$_test_id','I9','0',0),
+			(3240,'$_test_id','F14','0',0),
+			(3241,'$_test_id','I3','16',0),
+			(3242,'$_test_id','C7','0',0),
+			(3243,'$_test_id','D4','58',5),
+			(3244,'$_test_id','H10','57',1),
+			(3245,'$_test_id','F20','-2',0),
+			(3246,'$_test_id','F18','0',0),
+			(3247,'$_test_id','B12','0',0),
+			(3248,'$_test_id','D12','0',0),
+			(3249,'$_test_id','K13','-902',4),
+			(3250,'$_test_id','G15','0',0),
+			(3251,'$_test_id','F12','0',0),
+			(3252,'$_test_id','C23','0',0),
+			(3253,'$_test_id','E5','64',4),
+			(3254,'$_test_id','J4','0',0),
+			(3255,'$_test_id','A9','-901',1),
+			(3256,'$_test_id','C21','0',0)
 		"
 	);
 
@@ -595,19 +613,119 @@ sub test_Rails_Objects_Holder {
 	$holder->add_private( 'p1', 'p2', 'p3' );
 	ok( $holder->holds_private( 'p2' ) == 1, 'privates added and tested' );
 	
-	$holder->remove_private( 'p3' );
-	ok( $holder->holds_private( 'p3' ) == 0 && $holder->holds_private( 'p2' ) == 1 , 'privates removed correctly' );
+	$holder->remove_private( 'p2' );
+	ok( $holder->holds_private( 'p2' ) == 0 && $holder->holds_private( 'p3' ) == 1 , 'privates removed correctly' );
 	
 	my @test_list = sort( 'p1', 'p3' );
-	my @current_list = sort( $holder->private_keys() );
+	my @current_list = $holder->private_keys();
 	ok( @current_list ~~ @test_list, 'private keys returned correctly' );
-	
-	show( @current_list );
 	
 	ok( $holder->privates_text() eq 'p1,p3', 'private text returned correctly' );
 	
-	$holder->privates_from_text( 'a1', 'a3', 'a2' );
+	$holder->privates_from_text( 'a1,a3,a2' );
 	ok( $holder->privates_text() eq 'a1,a2,a3', 'privates parsed from text' );
+	
+	$holder->add_shares( 'a1', 2 );
+	$holder->add_shares( 'b2', 3 );
+	$holder->add_shares( 'c3', 6 );
+	
+	@test_list = sort( 'a1', 'b2', 'c3' );
+	@current_list = $holder->share_keys();
+	
+	ok( @current_list ~~ @test_list, 'shares added and keys are correct' );
+	
+	ok( $holder->holds_share( 'b2' ) == 1 && $holder->holds_share( 'd4' ) == 0, 'holding share is determined correctly' );
+	
+	ok( $holder->share_count( 'c3' ) == 6, 'share count is correct' );
+	
+	$holder->remove_shares( 'c3', 2 );
+	ok( $holder->share_count( 'c3' ) == 4, 'shares removed' );
+	
+	ok( $holder->shares_text() eq 'a1,2;b2,3;c3,4', 'share text is correct' );
+	
+	$holder->shares_from_text( 'a2,1;b3,5' );
+	ok( $holder->share_count( 'b3' ) == 5, 'shares from text are correct' );
+	
+	$holder->trains_from_text( 'a,b,b,b,c' );
+	ok( $holder->train_count() == 5, 'trains parsed from text and count is correct' );
+	
+	$holder->add_train( 'd' );
+	ok( $holder->train_count() == 6, 'train added' );
+	
+	$holder->remove_train( 'c' );
+	ok( $holder->train_count() == 5, 'train removed' );
+	
+	$holder->remove_train_type( 'b' );
+	ok( $holder->train_count() == 2, 'train type removed' );
+	
+	ok( $holder->trains_text() eq 'a,d', 'train text is correct' );
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Player {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::Player ...\n";
+	
+	use Rails::Objects::Player;
+	
+	my $player = Rails::Objects::Player->new( 'connection' => $connection, 'game' => 'junk' );
+	
+	ok( defined( $player ) && ref( $player ) eq 'Rails::Objects::Player', 'player object created' );
+	
+	ok( $player->display_name() eq 'Player 1', 'display name is correct by default' );
+	
+	$player->set_long_name( 'Sam' );
+	ok( $player->display_name() eq 'Sam', 'display name is correct after adjustment' );
+	
+	$player->clear_changed();
+	$player->set_pass_flag( 1 );
+	ok( $player->get_pass_flag() == 1 && $player->has_changed() == 1, 'pass flag is setable and getable' );
+	
+	$player->make_ceo_of( 'zzz' );
+	ok( $player->is_ceo_of( 'zzz' ) == 1, 'ceo flag is setable' );
+	ok( $player->is_ceo_of( 'aaa' ) == 0, 'ceo flag reads false correctly' );
+	
+	$player->remove_as_ceo( 'zzz' );
+	ok( $player->is_ceo_of( 'zzz' ) == 0, 'removed as ceo' );
+	
+	ok( $player->did_buy_or_sell() == 0, 'nothing bought or sold yet' );
+	
+	ok( $player->did_buy_this_round( 'a1' ) == 0, 'not bought yet' );
+	
+	$player->add_to_bought_this_round( 'a1' );
+	ok( $player->did_buy_this_round( 'a1' ) == 1, 'now bought' );
+	
+	ok( $player->did_buy_this_round( 'b2' ) == 0, 'something not bought' );
+	
+	ok( $player->did_sell_this_round( 'd1' ) == 0, 'not sold yet' );
+	
+	$player->add_to_sold_this_round( 'd1' );
+	ok( $player->did_sell_this_round( 'd1' ) == 1, 'now sold' );
+	
+	ok( $player->did_sell_this_round( 'e2' ) == 0, 'something not sold' );
+	
+	ok( $player->did_buy_or_sell() == 1, 'something bought or sold' );
+	
+	$player->clear_bought_sold();
+	ok( $player->did_buy_or_sell() == 0, 'something bought or sold is cleared' );
+	
+	$player = Rails::Objects::Player->new( 'connection' => $connection, 'game' => Base::Objects::Base->new( 'connection' => $connection ) );
+	$player->create_state( 'testid' );
+	
+	ok( $player->load_state( 'testid' ) == 1, 'state loaded' );
+	
+	$player->set_long_name( 'Merry' );
+	$player->save_state();
+	
+	
+	
 	
 	
 	
@@ -617,6 +735,198 @@ sub test_Rails_Objects_Holder {
 	return;
 }
 
+#############################################################################
+
+sub test_Rails_Objects_Corp {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::Corp ...\n";
+	
+	use Rails::Objects::Corp;
+	
+	my $corp = Rails::Objects::Corp->new( 'connection' => $connection, 'game' => 'junk' );
+	
+	ok( defined( $corp ) && ref( $corp ) eq 'Rails::Objects::Corp', 'corp object created' );
+	
+
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Route {
+	
+	print "\nRails::Objects::Route ... \n";
+	
+	use Rails::Objects::Route;
+	
+	my $route = Rails::Objects::Route->new();
+	
+	ok( defined( $route ) && ref( $route ) eq 'Rails::Objects::Route', 'route object created' );
+	
+
+	$route->add_node( 'node1', 10 );
+	$route->add_node( 'node5', 50 );
+	$route->add_node( 'node3', 0 );
+	$route->add_node( 'node4', 0 );
+	$route->add_node( 'node2', 30 );
+
+	show( $route->as_text() );
+
+	my $route2 = Rails::Objects::Route->new();
+
+	$route2->add_node( 'node5', 50 );
+	$route2->add_node( 'node6', 0 );
+	$route2->add_node( 'node7', 10 );
+	$route2->add_node( 'node8', 20 );
+
+	show( $route2->as_text() );
+	ok( $route->contains_common_path( $route2 ) == 0, 'no common path' );
+
+	my $route3 = Rails::Objects::Route->new();
+
+	$route3->add_node( 'node5', 50 );
+	$route3->add_node( 'node1', 10 );
+	$route3->add_node( 'node9', 10 );
+	$route3->add_node( 'node8', 0 );
+
+	show( $route3->as_text() );
+	ok( $route->contains_common_path( $route3 ) == 1, 'common path found' );
+
+
+	print "\n" . join( ',', $route3->paths() ) . "\n";
+	
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_RouteList {
+	
+	print "\nRails::Objects::RouteList ... \n";
+	
+	use Rails::Objects::RouteList;
+	
+	my $list = Rails::Objects::RouteList->new();
+	
+	ok( defined( $list ) && ref( $list ) eq 'Rails::Objects::RouteList', 'route list object created' );
+	
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Tile {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::Tile ... \n";
+	
+	use Rails::Objects::Tile;
+	
+	my $tile = Rails::Objects::Tile->new( 'connection' => $connection );
+	
+	ok( defined( $tile ) && ref( $tile ) eq 'Rails::Objects::Tile', 'tile object created' );
+	
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_TileSet {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::TileSet ... \n";
+	
+	use Rails::Objects::TileSet;
+	
+	my $tileset = Rails::Objects::TileSet->new( 'connection' => $connection );
+	
+	ok( defined( $tileset ) && ref( $tileset ) eq 'Rails::Objects::TileSet', 'tileset object created' );
+	
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_MapSpace {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::MapSpace ... \n";
+	
+	use Rails::Objects::MapSpace;
+	
+	my $tileset = Rails::Objects::TileSet->new( 'connection' => $connection );
+
+	my $space = Rails::Objects::MapSpace->new( 'connection' => $connection, 'tile_set' => $tileset );
+	
+	ok( defined( $space ) && ref( $space ) eq 'Rails::Objects::MapSpace', 'mapspace object created' );
+	
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Map {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::Map ... \n";
+	
+	use Rails::Objects::Map;
+	
+	my $map = Rails::Objects::Map->new( 'connection' => $connection, 'game' => 'junk' );
+	
+	ok( defined( $map ) && ref( $map ) eq 'Rails::Objects::Map', 'map object created' );
+	
+	
+	
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Game {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::Game ... \n";
+	
+	use Rails::Objects::Game;
+	
+	my $game = Rails::Objects::Game->new( 'connection' => $connection );
+	
+	ok( defined( $game ) && ref( $game ) eq 'Rails::Objects::Game', 'game object created' );
+	
+	
+	
+	
+	
+	return;
+}
 
 #############################################################################
 
@@ -631,66 +941,61 @@ sub test_Rails_Methods_Privates {
 	
 	return;
 }
+		
+
+
+
+
+
+
+#############################################################################
+
+sub engine_testing {
+	my $connection		= shift;
 	
-exit();	
+	my $game = Rails::Objects::Game->new( 'connection' => $connection );
+	$game->load_state( $_test_id );
 	
+	my %cases = (
+		'case 1:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '2', 'value' => '60' },
+		'case 2:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '3', 'value' => '90' },
+		'case 3:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '4', 'value' => '100' },
+		'case 4:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '5', 'value' => '130' },
+		'case 5:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '6', 'value' => '140' },
+		'case 6:'   => { 'start' => 'D2.city1', 'corp' => 'co', 'train' => '6', 'value' => '170' },
+	);
 
-use Rails::Objects::Route;
+	foreach my $case_key ( sort( keys( %cases ) ) ) {
 
-print "\n";
+		my $route_list = $game->map()->routes_through_node(
+			$cases{ $case_key }->{'start'},
+			$cases{ $case_key }->{'train'},
+			$cases{ $case_key }->{'corp'},
+		);
 
-my $route = Rails::Objects::Route->new();
+		my $best_route = $route_list->best_not_matching();
 
-$route->add_node( 'node1', 10 );
-$route->add_node( 'node5', 50 );
-$route->add_node( 'node3', 0 );
-$route->add_node( 'node4', 0 );
-$route->add_node( 'node2', 30 );
+		print "\nCase: $case_key - ";
 
-print "\n " . $route->as_text();
+		if ( $best_route->get_value() != $cases{ $case_key }->{'value'} ) {
+			print "failed!";
 
+			foreach my $route ( @{ $route_list->routes() } ) {
+				print "\n " . $route->as_text();
+			}
 
-my $route2 = Rails::Objects::Route->new();
+		}
+		else {
+			print "passed.";
+		}
 
-$route2->add_node( 'node5', 50 );
-$route2->add_node( 'node6', 0 );
-$route2->add_node( 'node7', 10 );
-$route2->add_node( 'node8', 20 );
-
-print "\n " . $route2->as_text();
-
-if ( $route->contains_common_path( $route2 ) == 1 ) {
-	print "\nCommon path found.";
-}
-else {
-	print "\nNo Common path.";
-}
-
-
-my $route3 = Rails::Objects::Route->new();
-
-$route3->add_node( 'node5', 50 );
-$route3->add_node( 'node1', 10 );
-$route3->add_node( 'node9', 10 );
-$route3->add_node( 'node8', 0 );
-
-print "\n " . $route3->as_text();
-
-if ( $route->contains_common_path( $route3 ) == 1 ) {
-	print "\nCommon path found.";
-}
-else {
-	print "\nNo Common path.";
+	}
+	
+	
+	return;
 }
 
 
 
 
 
-
-
-
-
-
-
-print "\n";

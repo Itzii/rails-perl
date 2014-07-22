@@ -12,7 +12,8 @@ use warnings;
     my @id              :Field  :Default( 0 )   	:Get(get_id);
     my @isvalid         :Field  :Default( 0 )		:Get(is_valid);
 	
-    my @connection      :Field  :Default( undef )	:Get(connection)    :Arg( 'name' => 'connection', 'Mandatory' => 1 );
+#    my @connection      :Field  :Default( undef )	:Get(connection)    :Arg( 'name' => 'connection', 'Mandatory' => 1 );
+    my @connection      :Field  :Default( undef )	:Get(connection)    :Arg(connection);
     my @doctype         :Field  :Default( '' )  	:Std(doctype)   	:Arg(doctype);
     my @islockable      :Field  :Default( 0 )   	:Std(lockable)   	:Arg(is_lockable);
 

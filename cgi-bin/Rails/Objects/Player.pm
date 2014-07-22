@@ -253,7 +253,7 @@ use warnings;
 		$all_sold{ $corp } = 1;
 		my @corp_keys = keys( %all_sold );
 		
-		$self->set( \@sold_this_round, \@corp_keys );
+		$self->set( \@sold_this_round, join( ',', @corp_keys ) );
 		
 		return;
 	}
@@ -264,12 +264,12 @@ use warnings;
 		my $self	= shift;
 		my $corp	= shift;
 		
-		my %all_bought = map { $_ => 1 } split( /,/, $sold_this_round[ $$self ] );
+		my %all_bought = map { $_ => 1 } split( /,/, $bought_this_round[ $$self ] );
 		
 		$all_bought{ $corp } = 1;
 		my @corp_keys = keys( %all_bought );
 		
-		$self->set( \@bought_this_round, \@corp_keys );
+		$self->set( \@bought_this_round, join( ',', @corp_keys ) );
 		
 		return;
 	}
@@ -303,7 +303,7 @@ use warnings;
 
 	#############################################
 
-	sub total_certificate_count {
+	sub total_certificate_count { # TODO test now
 		my $self	= shift;
 		
 		my $count = 0;

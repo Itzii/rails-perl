@@ -4,13 +4,13 @@ use strict;
 use warnings;
 
 use Rails::Objects::Game;
-use Rails::Objects::Connection;
+use Base::Objects::Connection;
 
 $| = 1;
 
 print "\n";
 
-my $game = Rails::Objects::Game->new( 'connection' => Rails::Objects::Connection->new( 'database' => 'testrails.sqlite' ) );
+my $game = Rails::Objects::Game->new( 'connection' => Base::Objects::Connection->new( 'database' => 'test.sqlite' ) );
 $game->load_state( 'TiXsVnVlCEB6' );
 
 my %cases = (

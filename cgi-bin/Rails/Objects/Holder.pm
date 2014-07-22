@@ -136,6 +136,8 @@ use warnings;
 			$self->privates()->{ $private } = 1;
 		}
 		
+		$self->changed();
+		
 		return;
 	}
 
@@ -144,7 +146,7 @@ use warnings;
 	sub share_keys {
 		my $self	= shift;
 		
-		return keys( %{ $self->shares() } );
+		return sort( keys( %{ $self->shares() } ) );
 	}
 
 	#############################################
@@ -176,7 +178,8 @@ use warnings;
 		my $corp	= shift;
 		my $count	= shift;
 		
-		my $current_count = $self->share_count();
+		my $current_count = $self->share_count( $corp );
+		
 		$current_count += $count;
 
 		$self->shares()->{ $corp } = $current_count;
@@ -193,7 +196,7 @@ use warnings;
 		my $corp	= shift;
 		my $count	= shift;
 		
-		my $current_count = $self->share_count();
+		my $current_count = $self->share_count( $corp );
 		
 		if ( $current_count <= $count ) {
 			$current_count = 0;
@@ -215,7 +218,7 @@ use warnings;
 		my $self	= shift;
 		
 		my @share_info;		
-		foreach my $corp ( keys( %{ $self->shares() } ) ) {
+		foreach my $corp ( sort( keys( %{ $self->shares() } ) ) ) {
 			push( @share_info, $corp . ',' . $self->shares()->{ $corp } );
 		}
 		
@@ -228,11 +231,15 @@ use warnings;
 		my $self		= shift;
 		my $text		= shift;
 		
+		$self->set( \@shares, {} );
+
 		foreach my $corp ( split( /;/, $text ) ) {
 			my @parts = split( /,/, $corp );
 
 			$self->shares()->{ $parts[ 0 ] } = $parts[ 1 ];
 		}
+		
+		$self->changed();
 		
 		return;
 	}
@@ -242,9 +249,7 @@ use warnings;
 	sub train_count {
 		my $self	= shift;
 		
-		my @current = split( /,/, $self->trains() );
-		
-		return scalar( @current );
+		return scalar( @{ $self->trains() } );
 	}		
 
 	#############################################
@@ -253,13 +258,13 @@ use warnings;
 		my $self	= shift;
 		my @train	= @_;
 		
-		my @current = split( /,/, $self->trains() );
+		my @current = @{ $self->trains() };
 		
 		foreach ( @train ) {
 			push( @current, $_ );
 		}
 		
-		$self->set_trains( join( ',', @current ) );
+		$self->set( \@trains, \@current );
 		
 		$self->changed();
 		
@@ -293,7 +298,7 @@ use warnings;
 		my $self	= shift;
 		my $train	= shift;
 		
-		my @current = split( /,/, $self->trains() );
+		my @current = @{ $self->trains() };
 		my @new = ();
 		
 		my $count = 0;
@@ -307,7 +312,7 @@ use warnings;
 			}
 		}
 		
-		$self->set_trains( join( ',', @new ) );
+		$self->set( \@trains, \@new );
 		
 		if ( $count > 0 ) {
 			$self->changed();
@@ -321,7 +326,7 @@ use warnings;
 	sub trains_text {
 		my $self	= shift;
 		
-		return join( ',', @{ $self->trains() } );
+		return join( ',', sort( @{ $self->trains() } ) );
 		
 	}
 	
@@ -331,7 +336,11 @@ use warnings;
 		my $self	= shift;
 		my $text	= shift;
 		
-		push( @{ $self->trains() }, split( /,/, $text ) );
+		my @t_trains = @{ $self->trains() };
+		
+		push( @t_trains, split( /,/, $text ) );
+		
+		$self->set( \@trains, \@t_trains );
 		
 		return;
 	}
