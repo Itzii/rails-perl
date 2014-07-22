@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter;
 
-use Rails::Objects::Connection;
+use Base::Objects::Connection;
 
 our @ISA	= qw( Exporter );
 our @EXPORT = qw( 
@@ -23,7 +23,8 @@ my %_tables = (
 			`name_short` VARCHAR DEFAULT ( '' ),
 			`station`    VARCHAR DEFAULT ( '' ),
 			`start_tile` VARCHAR DEFAULT ( '' ),
-			`start_city` VARCHAR DEFAULT ( '' );
+			`start_city` VARCHAR DEFAULT ( '' ) 
+		);
 		INSERT INTO corps VALUES('prr','Pennsylvania','PRR','0,40,100,100','H12','city1');
 		INSERT INTO corps VALUES('nyc','New York Central','NYC','0,40,100,100','E19','city1');
 		INSERT INTO corps VALUES('cpr','Canadian Pacific','CPR','0,40,100,100','A19','city1');
@@ -44,7 +45,8 @@ my %_tables = (
 			`impassable` VARCHAR DEFAULT ('') ,
 			`cost` INTEGER DEFAULT (0) ,
 			`label` VARCHAR DEFAULT ('') ,
-			`ob_city` VARCHAR);
+			`ob_city` VARCHAR 
+		);
 		INSERT INTO map_spaces VALUES('I11','0',0,0,0,'','',120,'','');
 		INSERT INTO map_spaces VALUES('F16','-10',0,0,0,'','',120,'','');
 		INSERT INTO map_spaces VALUES('E15','0',0,0,0,'','',0,'','');
@@ -648,7 +650,7 @@ sub delete_tables {
 	my $connection		= shift;
 	
 	foreach my $table_name ( keys( %_tables ) ) {
-		$connection->simple_exec( 'DROP TABLE ' . $table_name . '; VACUUM;' );
+		$connection->simple_exec( 'DROP TABLE IF EXISTS ' . $table_name . '; VACUUM;' );
 	}
 	
 	return;

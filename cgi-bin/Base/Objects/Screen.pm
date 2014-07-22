@@ -82,6 +82,28 @@ use warnings;
 	
 	#############################################
 
+	sub set_arg {
+		my $self	= shift;
+		my $key		= shift;
+		my $value	= shift;
+		
+		unless ( defined( $value ) )  {
+			delete ( $args[ $$self ]->{ $key } );
+			return;
+		}
+		
+		if ( $value eq '' ) {
+			delete ( $args[ $$self ]->{ $key } );
+			return;
+		}
+		
+		$args[ $$self ]->{ $key } = $value;
+		
+		return;
+	}
+
+	#############################################
+
 	sub gid {
 		my $self	= shift;
 		
@@ -127,7 +149,7 @@ use warnings;
 	sub body {
 		my $self	= shift;
 		
-		my $template_dir = $self->get_config()->param( 'template_dir' );
+		my $template_dir = $self->config()->param( 'template_dir' );
 	
 		my $template = HTML::Template->new( 
 			'filename'			=> $template_dir . '/' . $template[ $$self ],
@@ -199,8 +221,6 @@ use warnings;
 		my $self	= shift;
 		my $message	= shift;
 		
-#		my $cgi = CGI::Simple->new();	
-#		return $cgi->header() . 'ok:' . $message;
 		return 'ok:' . $message;		
 	}
 	
@@ -210,8 +230,6 @@ use warnings;
 		my $self	= shift;
 		my $message	= shift;
 		
-#		my $cgi = CGI::Simple->new();	
-#		return $cgi->header() . 'error:' . $message;
 		return 'error:' . $message;		
 	}	
 	

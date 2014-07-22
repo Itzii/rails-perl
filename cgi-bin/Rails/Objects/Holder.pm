@@ -113,7 +113,7 @@ use warnings;
 	sub private_keys {
 		my $self	= shift;
 		
-		return keys( %{ $self->privates() } );
+		return sort( keys( %{ $self->privates() } ) );
 	}
 
 	#############################################
@@ -121,7 +121,7 @@ use warnings;
 	sub privates_text {
 		my $self	= shift;
 		
-		return join( ',', keys( %{ $self->privates() } ) );
+		return join( ',', sort( keys( %{ $self->privates() } ) ) );
 	}
 
 	#############################################
@@ -129,6 +129,8 @@ use warnings;
 	sub privates_from_text {
 		my $self	= shift;
 		my $text	= shift;
+		
+		$self->set( \@privates, {} );
 		
 		foreach my $private ( split( /,/, $text ) ) {
 			$self->privates()->{ $private } = 1;

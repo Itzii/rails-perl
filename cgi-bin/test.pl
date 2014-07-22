@@ -27,13 +27,17 @@ test_Base_Objects_Changeable();
 
 my $connection = test_Base_Objects_Connection();
 
-if ( exists( $_args{'clean'} ) ) {
+#if ( exists( $_args{'clean'} ) ) {
+
+	print "\nDeleting previous test tables ... \n";
 	delete_tables( $connection );
+
+	print "\nCreating test tables ... \n";
 	create_tables( $connection );
 
 	print "\nSetting up dummy data ...\n";
 	setup_dummy_data( $connection );
-}
+#}
 
 
 test_Base_Methods_Session();
@@ -42,6 +46,8 @@ test_Base_Objects_Base( $connection );
 test_Base_Objects_Base_List( $connection );
 test_Base_Objects_Screen( $connection );
 
+test_Rails_Objects_Base( $connection );
+test_Rails_Objects_Holder( $connection );
 
 
 
@@ -521,11 +527,88 @@ sub test_Base_Objects_Screen {
 	my $screen = Base::Objects::Screen->new( 
 		'config' => 'test_config', 
 		'type' => 'test', 
-		'template' => 'test', 
+		'template' => 'test.html', 
 		'connection' => $connection,
 	);
 	
 	ok( defined( $screen ) && ref( $screen ) eq 'Base::Objects::Screen', 'screen object created' );
+	
+	$screen->set_arg( 'gid', 'test123' );
+	ok( $screen->gid() eq 'test123', 'gid is readable' );
+	
+	$screen->set_arg( 'pid', '123test' );
+	ok( $screen->pid() eq '123test', 'pid is readable' );
+	
+	$screen->set_arg( 'action', 'testaction' );
+	ok( $screen->action() eq 'testaction', 'action is readable' );
+	
+	my $body = $screen->body();
+	ok( $body =~ m{ test123 }xmsi, 'body text has vars replaced' );
+	
+	$screen->set_arg( 'action', 'stamp_value' );
+	ok( $screen->process_action() eq 'ok:0', 'stamp value retrieved' );
+	
+	ok( $screen->money( 1000 ) eq '$1,000', 'money is formatted correctly' );
+	
+	
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Base {
+	my $connection		= shift;
+	
+	print "\nRails::Objects::Base ... \n";
+	
+	use Rails::Objects::Base;
+	
+	my $base = Rails::Objects::Base->new( 'connection' => $connection );
+	
+	ok( defined( $base ) && ref( $base ) eq 'Rails::Objects::Base', 'rails base object created' );
+	
+
+
+	return;
+}
+
+#############################################################################
+
+sub test_Rails_Objects_Holder {
+	my $connection		= shift;
+	
+	print "\nRails::Methods::Holder ...\n";
+	
+	use Rails::Objects::Holder;
+	
+	my $holder = Rails::Objects::Holder->new( 'connection' => $connection, 'game' => 'junk' );
+	
+	ok( defined( $holder ) && ref( $holder ) eq 'Rails::Objects::Holder', 'holder object created' );
+	
+	$holder->set_cash( 100 );
+	$holder->adjust_cash( 10 );
+	ok( $holder->get_cash() == 110, 'cash set and adjusted correctly' );
+	
+	$holder->adjust_cash( -50 );
+	ok( $holder->get_cash() == 60, 'cash decremented correctly' );
+	
+	$holder->add_private( 'p1', 'p2', 'p3' );
+	ok( $holder->holds_private( 'p2' ) == 1, 'privates added and tested' );
+	
+	$holder->remove_private( 'p3' );
+	ok( $holder->holds_private( 'p3' ) == 0 && $holder->holds_private( 'p2' ) == 1 , 'privates removed correctly' );
+	
+	my @test_list = sort( 'p1', 'p3' );
+	my @current_list = sort( $holder->private_keys() );
+	ok( @current_list ~~ @test_list, 'private keys returned correctly' );
+	
+	show( @current_list );
+	
+	ok( $holder->privates_text() eq 'p1,p3', 'private text returned correctly' );
+	
+	$holder->privates_from_text( 'a1', 'a3', 'a2' );
+	ok( $holder->privates_text() eq 'a1,a2,a3', 'privates parsed from text' );
+	
 	
 	
 	
@@ -533,6 +616,7 @@ sub test_Base_Objects_Screen {
 	
 	return;
 }
+
 
 #############################################################################
 
