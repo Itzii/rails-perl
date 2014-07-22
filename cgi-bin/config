@@ -2,8 +2,3 @@ log_path            = /home/dan/rails-perl/log
 template_dir        = /home/dan/rails-perl/httpdocs/templates
 font_dir            = /home/dan/rails-perl/httpdocs/fonts
 database			= /home/dan/rails-perl/cgi-bin/rails.sqlite
-
-#log_path            = p:/IIS/log
-#template_dir        = p:/IIS/wwwroot/templates
-#font_dir            = p:/IIS/wwwroot/fonts
-#database			= p:/IIS/wwwroot/cgi-bin/rails.sqlite
