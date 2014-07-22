@@ -7,7 +7,7 @@ use warnings;
 
 {
     use Object::InsideOut;
-    use PSG::Objects::Connection;
+    use Base::Objects::Connection;
 
     my @id              :Field  :Default( 0 )   	:Get(get_id);
     my @isvalid         :Field  :Default( 0 )		:Get(is_valid);
@@ -29,16 +29,6 @@ use warnings;
 
         return;
     }
-
-	#############################################    
-
-	sub _destroy :Destroy {
-		my $self		= shift;
-		
-		$self->unlock();
-		
-		return;
-	}
 
 	#############################################    
 
@@ -70,10 +60,6 @@ use warnings;
 
     sub clear {
         my $self        = shift;
-		
-        if ( $self->is_valid() == 1 ) {
-            $self->unlock();
-        }
 
 		$self->set( \@isvalid, 0 );
 		$self->set( \@id, -1 );

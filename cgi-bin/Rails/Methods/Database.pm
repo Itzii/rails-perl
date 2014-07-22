@@ -1,11 +1,11 @@
-package PSG::Methods::Database;
+package Rails::Methods::Database;
 
 use strict;
 use warnings;
 
 use Exporter;
 
-use PSG::Objects::Connection;
+use Rails::Objects::Connection;
 
 our @ISA	= qw( Exporter );
 our @EXPORT = qw( 
@@ -636,7 +636,7 @@ sub clear_tables {
 	my $connection		= shift;
 	
 	foreach my $table_name ( keys( %_tables ) ) {
-		$connection->simple_exec( 'TRUNCATE TABLE ' . $table_name );
+		$connection->simple_exec( 'DELETE FROM ' . $table_name . '; VACUUM;' );
 	}
 	
 	return;
@@ -648,7 +648,7 @@ sub delete_tables {
 	my $connection		= shift;
 	
 	foreach my $table_name ( keys( %_tables ) ) {
-		$connection->simple_exec( 'DROP TABLE ' . $table_name );
+		$connection->simple_exec( 'DROP TABLE ' . $table_name . '; VACUUM;' );
 	}
 	
 	return;
