@@ -74,7 +74,7 @@ engine_testing( $connection );
 done_testing();
 
 if ( ! exists( $_args{'dirty'} ) ) {
-	clear_tables( $connection );
+#	clear_tables( $connection );
 }
 
 #############################################################################
@@ -131,7 +131,7 @@ sub setup_dummy_data {
 
 	$connection->simple_exec(
 		"INSERT INTO state_game ( id, cash, shares, privates, trains, current_phase, next_phase, current_round, current_player, game_name, prioritydeal_player, player_count, depreciate_private, auction_players, corp_turns, new_trains ) VALUES
-			('$_test_id',9600,'','5_bo,4_ca,0_sv,1_cs,3_mh,2_dh','',-1,-1,0,5,'3Yoc5W3oTgEo',5,6,0,'','','2,2,2,2,2,2')
+			('$_test_id',9600,'','5_bo,4_ca,0_sv,1_cs,3_mh,2_dh','',-1,-1,0,5,'Test Game',5,6,0,'','','2,2,2,2,2,2')
 		"
 	);
 
@@ -901,6 +901,9 @@ sub test_Rails_Objects_Map {
 	
 	ok( defined( $map ) && ref( $map ) eq 'Rails::Objects::Map', 'map object created' );
 	
+	$map->load_state( $_test_id );
+	
+	
 	
 	
 	
@@ -920,6 +923,26 @@ sub test_Rails_Objects_Game {
 	my $game = Rails::Objects::Game->new( 'connection' => $connection );
 	
 	ok( defined( $game ) && ref( $game ) eq 'Rails::Objects::Game', 'game object created' );
+	
+	ok( $game->load_state( $_test_id ) == 1, 'game state says its loaded' );
+	
+	ok( $game->get_game_name() eq 'Test Game', 'name is loaded correctly' );
+	
+	ok( $game->get_cash() == 9600, 'cash is loaded correctly' );
+	
+	ok( $game->get_current_phase() == -1, 'current phase is loaded correctly' );
+	
+	ok( $game->get_current_round() == 0, 'current round is loaded correctly' );
+	
+	ok( $game->get_next_phase() == -1, 'next phase is loaded correctly' );
+	
+	ok( $game->get_current_player_id() == 5, 'current player id loaded correctly' );
+	
+	ok( $game->get_priority_player_id() == 5, 'priority player id loaded correctly' );
+	
+	
+	
+	
 	
 	
 	
@@ -958,11 +981,11 @@ sub engine_testing {
 	
 	my %cases = (
 		'case 1:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '2', 'value' => '60' },
-		'case 2:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '3', 'value' => '90' },
-		'case 3:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '4', 'value' => '100' },
-		'case 4:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '5', 'value' => '130' },
-		'case 5:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '6', 'value' => '140' },
-		'case 6:'   => { 'start' => 'D2.city1', 'corp' => 'co', 'train' => '6', 'value' => '170' },
+#		'case 2:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '3', 'value' => '90' },
+#		'case 3:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '4', 'value' => '100' },
+#		'case 4:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '5', 'value' => '130' },
+#		'case 5:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '6', 'value' => '140' },
+#		'case 6:'   => { 'start' => 'D2.city1', 'corp' => 'co', 'train' => '6', 'value' => '170' },
 	);
 
 	foreach my $case_key ( sort( keys( %cases ) ) ) {

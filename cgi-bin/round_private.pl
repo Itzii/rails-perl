@@ -130,7 +130,7 @@ sub _1st_pass_private {
 	
 	my $pid = $r_args->{'pid'};
 	
-	if ( $pid != $game->get_current_player() ) {
+	if ( $pid != $game->get_current_player_id() ) {
 		return 'error:Invalid PID';
 	}
 	
@@ -167,7 +167,7 @@ sub _1st_pass_private {
 	
 			$game->log_event( $game, "Player $pid received $private for free" );
 	
-			$game->next_priority_player( $pid );
+			$game->next_priority_player_id( $pid );
 			
 			_auto_auction( $game );
 			
@@ -202,7 +202,7 @@ sub _1st_buy_private {
 	
 	my $pid = $r_args->{'pid'};
 	
-	if ( $pid != $game->get_current_player() ) {
+	if ( $pid != $game->get_current_player_id() ) {
 		return 'error:Invalid PID';
 	}
 	
@@ -226,7 +226,7 @@ sub _1st_buy_private {
 	$game->log_event( "Player $pid purchased $private for $cost" );
 	
 	$game->clear_player_pass( $pid );
-	$game->next_priority_player( $pid );
+	$game->next_priority_player_id( $pid );
 	
 	my $t_phase = _check_for_special_buys( $game, $player, $private, $r_args->{'par'} );
 	if ( $t_phase != $game->get_current_phase() ) {
@@ -252,7 +252,7 @@ sub _1st_bid_private {
 	
 	my $pid = $r_args->{'pid'};
 	
-	if ( $pid != $game->get_current_player() ) {
+	if ( $pid != $game->get_current_player_id() ) {
 		return 'error:Invalid PID';
 	}
 	
@@ -500,7 +500,7 @@ sub check_for_end_of_auctions {
 		$game->tick_auction_stamp();
 		$game->tick_all_players_stamp();
 	
-		$game->log_event( "Waiting for Player " . $game->get_current_player() );
+		$game->log_event( "Waiting for Player " . $game->get_current_player_id() );
 		return 'ok';
 	}
 	
@@ -513,8 +513,8 @@ sub check_for_end_of_auctions {
 	$game->set_current_round( 0 );
 	$game->log_event( "Stock Round Begins -----" );
 	
-	$game->set_current_player( $game->get_priority_player() );
-	$game->log_event( "Waiting for Player " . $game->get_current_player() );
+	$game->set_current_player_id( $game->get_priority_player_id() );
+	$game->log_event( "Waiting for Player " . $game->get_current_player_id() );
 	
 	$game->save_state();
 	$game->tick_auction_stamp();

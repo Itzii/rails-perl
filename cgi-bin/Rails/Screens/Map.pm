@@ -213,7 +213,7 @@ use warnings;
 				'lleft'		=> $x,
 				'lwidth'	=> $width,
 				'l_name'	=> $self->game()->players()->[ $pid ]->display_name(),
-				'l_current'	=> ( $self->game()->get_current_player() == $pid ) ? 1 : 0,
+				'l_current'	=> ( $self->game()->get_current_player_id() == $pid ) ? 1 : 0,
 			);
 			
 			push( @lines, \%info );

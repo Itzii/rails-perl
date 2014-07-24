@@ -227,9 +227,11 @@ use warnings;
 		my ( $space ) = split( /\./, $node );
 		
 		unless ( defined( $self->spaces()->{ $space } ) ) {
+			print "\n*** space ($space) is undefined";
 			return 0;
 		}
-		
+
+		print "\n*** space ($space) is defined with a value";
 		return $self->spaces()->{ $space }->value_of_node( $node, $high_low );
 	}
 

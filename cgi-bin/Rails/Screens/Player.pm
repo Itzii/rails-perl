@@ -133,7 +133,7 @@ use warnings;
 		my $private_for_sale = $privates[ 0 ];
 		
 		$self->set_values( 'private_for_sale' => $private_for_sale );
-		$self->set_values( 'is_current_player' => ( $self->game()->get_current_player() == $self->pid() ) ? 1 : 0 );
+		$self->set_values( 'is_current_player' => ( $self->game()->get_current_player_id() == $self->pid() ) ? 1 : 0 );
 
 
 		my @min_bid_lines = ();
@@ -168,7 +168,7 @@ use warnings;
 				{ 
 					'other_name' => $self->game()->players()->[ $pid ]->display_name(), 
 					'other_cash' => $self->game()->players()->[ $pid ]->get_cash(),
-					'other_current'	=> ( $pid == $self->game()->get_current_player() ) ? 1 : 0,					
+					'other_current'	=> ( $pid == $self->game()->get_current_player_id() ) ? 1 : 0,					
 				} 
 			);
 		}

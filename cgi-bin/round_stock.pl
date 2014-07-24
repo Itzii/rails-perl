@@ -87,7 +87,7 @@ sub main {
 
 	my $pid = $r_args->{'pid'};
 
-	if ( $pid != $game->get_current_player() ) {
+	if ( $pid != $game->get_current_player_id() ) {
 		return 'error:Invalid PID';
 	}
 

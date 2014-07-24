@@ -90,6 +90,9 @@ use overload
 		my $high_low = ( $self->fullmap()->game()->get_current_phase() >= 5 ) ? 1 : 0;
 		
 		my $route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
+		
+#		print "\n*** adding note: $node, " . $self->fullmap()->value_of_node( $node, $high_low );
+		
 		$route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
 		
 		$self->add_route( $route );

@@ -39,8 +39,8 @@ my $_starting_bank	= 12000;
 	
 	my @current_round	:Field	:Default( 0 )				:Std(current_round);
 	
-	my @current_player	:Field	:Default( 0 ) 				:Std(current_player);
-	my @priority_player	:Field	:Default( 0 )				:Std(priority_player);
+	my @current_player	:Field	:Default( 0 ) 				:Std(current_player_id);
+	my @priority_player	:Field	:Default( 0 )				:Std(priority_player_id);
 	
 	my @corps			:Field	:Default( undef )			:Get(corps);
 	my @corp_turns		:Field	:Default( undef )			:Get(corp_turns);
@@ -170,9 +170,9 @@ my $_starting_bank	= 12000;
 		
 		$self->log_event( 'Set initial state to first stock round to purchase private companies.' );
 		
-		$self->set_current_player( $player_ids[ rand @player_ids ] );
-		$self->set_priority_player( $self->get_current_player() );
-		$self->log_event( 'Player ' . $self->get_current_player() . ' is first.' );
+		$self->set_current_player_id( $player_ids[ rand @player_ids ] );
+		$self->set_priority_player_id( $self->get_current_player_id() );
+		$self->log_event( 'Player ' . $self->get_current_player_id() . ' is first.' );
 		
 		
 		$self->connection()->sql( 
@@ -183,8 +183,8 @@ my $_starting_bank	= 12000;
 			$self->get_cash(), $self->shares_text(), $self->privates_text(), $self->trains_text(),
 			$self->get_game_name(), join( ',', @{ $self->new_trains() } ),
 			$self->get_current_phase(), $self->get_next_phase(), 
-			$self->get_current_round(), $self->get_current_player(),
-			$self->get_priority_player(), $self->number_of_players(),
+			$self->get_current_round(), $self->get_current_player_id(),
+			$self->get_priority_player_id(), $self->number_of_players(),
 		);
 		
 		$self->connection->sql( "INSERT INTO state_change_stamps ( game_id, stamp_name, stamp_value ) VALUES ( ?, 'map', 0 ) ",	$self->get_id() );
@@ -223,8 +223,8 @@ my $_starting_bank	= 12000;
 		$self->set_current_phase( $record->{'current_phase'} );
 		$self->set_current_round( $record->{'current_round'} );
 		$self->set_next_phase( $record->{'next_phase'} );
-		$self->set_current_player( $record->{'current_player'} );
-		$self->set_priority_player( $record->{'prioritydeal_player'} );
+		$self->set_current_player_id( $record->{'current_player'} );
+		$self->set_priority_player_id( $record->{'prioritydeal_player'} );
 		$self->set( \@player_count, $record->{'player_count'} );
 
 		push( @{ $self->new_trains() }, split( /,/, $record->{'new_trains'} ) );
@@ -279,8 +279,8 @@ my $_starting_bank	= 12000;
 
 			$self->get_cash(), $self->shares_text(), $self->privates_text(), $self->trains_text(),
 			$self->get_current_phase(), $self->get_next_phase(), 
-			$self->get_current_round(), $self->get_current_player(), $self->get_game_name(),
-			$self->get_priority_player(), 
+			$self->get_current_round(), $self->get_current_player_id(), $self->get_game_name(),
+			$self->get_priority_player_id(), 
 			join( ',', @{ $self->new_trains() } ), join( ',', @{ $self->auction_players() } ),
 			$self->get_depreciation(), join( ',', @{ $self->corp_turns() } ), 
 			$self->get_id()
@@ -509,7 +509,7 @@ my $_starting_bank	= 12000;
 	sub next_player {
 		my $self		= shift;
 		
-		my $current = $self->get_current_player();
+		my $current = $self->get_current_player_id();
 		
 		my @player_ids = $self->all_player_ids();
 		
@@ -521,18 +521,18 @@ my $_starting_bank	= 12000;
 			}
 		}
 		
-		$self->set_current_player( $next );
-		$self->log_event( "Now Waiting on Player " . $self->get_current_player() );
+		$self->set_current_player_id( $next );
+		$self->log_event( "Now Waiting on Player " . $self->get_current_player_id() );
 		
-		return $self->get_current_player();
+		return $self->get_current_player_id();
 	}
 
 	#############################################
 
-	sub next_priority_player {
+	sub next_priority_player_id {
 		my $self		= shift;
 		
-		my $current = $self->get_current_player();
+		my $current = $self->get_current_player_id();
 		
 		my @player_ids = $self->all_player_ids();
 		
@@ -544,8 +544,8 @@ my $_starting_bank	= 12000;
 			}
 		}
 		
-		$self->set_priority_player( $next );
-		$self->log_event( "Priority Deal passes to Player " . $self->get_priority_player() );
+		$self->set_priority_player_id( $next );
+		$self->log_event( "Priority Deal passes to Player " . $self->get_priority_player_id() );
 		
 		return;
 	}		
