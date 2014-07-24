@@ -101,171 +101,200 @@ sub show {
 sub setup_dummy_data {
 	my $connection 	= shift;
 
-	$connection->simple_exec(
-		"INSERT INTO state_change_stamps ( id, game_id, stamp_name, stamp_value ) VALUES
-			(52,'$_test_id','player_0',0),
-			(53,'$_test_id','player_1',0),
-			(54,'$_test_id','player_2',0),
-			(55,'$_test_id','player_3',0),
-			(56,'$_test_id','player_4',0),
-			(57,'$_test_id','player_5',0),
-			(58,'$_test_id','map',15),
-			(59,'$_test_id','market',0),
-			(60,'$_test_id','auction',0),
-			(61,'','',0)
-		"
-	);
-
-	$connection->simple_exec(
-		"INSERT INTO state_corps ( id, game_id, corp_id, cash, trains, privates, stations, shares, par_price, current_price, current_index, current_position ) VALUES
-			(1,'$_test_id','prr',0,'','','0,40,100,100','prr,10',0,0,0,'-1,-1'),
-			(2,'$_test_id','cpr',0,'','','0,40,100,100','cpr,10',0,0,0,'-1,-1'),
-			(3,'$_test_id','nyc',0,'','','0,40,100,100','nyc,10',0,0,0,'-1,-1'),
-			(4,'$_test_id','bo',0,'','','0,40,100','bo,10',0,0,0,'-1,-1'),
-			(5,'$_test_id','bm',0,'','','0,40','bm,10',0,0,0,'-1,-1'),
-			(6,'$_test_id','nnh',0,'','','0,40','nnh,10',0,0,0,'-1,-1'),
-			(7,'$_test_id','co',0,'','','0,40,100','co,10',0,0,0,'-1,-1'),
-			(8,'$_test_id','erie',0,'','','0,40,100','erie,10',0,0,0,'-1,-1')
-		"
-	);
-
-	$connection->simple_exec(
-		"INSERT INTO state_game ( id, cash, shares, privates, trains, current_phase, next_phase, current_round, current_player, game_name, prioritydeal_player, player_count, depreciate_private, auction_players, corp_turns, new_trains ) VALUES
-			('$_test_id',9600,'','5_bo,4_ca,0_sv,1_cs,3_mh,2_dh','',-1,-1,0,5,'Test Game',5,6,0,'','','2,2,2,2,2,2')
-		"
-	);
-
-	$connection->simple_exec(
-		"INSERT INTO state_players ( id, game_id, player_id, long_name, cash, shares, privates, running, pass_flag, sold, bought ) VALUES
-			(1,'$_test_id',0,'Tom',400,'','','',0,'',''),
-			(2,'$_test_id',1,'',400,'','','',0,'',''),
-			(3,'$_test_id',2,'',400,'','','',0,'',''),
-			(4,'$_test_id',3,'',400,'','','',0,'',''),
-			(5,'$_test_id',4,'',400,'','','',0,'',''),
-			(6,'$_test_id',5,'Sam',400,'','','',0,'','')
-		"
-	);
-
-	$connection->simple_exec(
-		"INSERT INTO state_stations ( id, game_id, space_id, station_id, slot_id, corp ) VALUES
-			(865,'$_test_id','G19','city2',0,''),
-			(866,'$_test_id','G19','city1',0,''),
-			(867,'$_test_id','H18','city2',0,''),
-			(868,'$_test_id','H18','city1',0,''),
-			(869,'$_test_id','A19','city1',0,''),
-			(870,'$_test_id','D14','city1',0,''),
-			(871,'$_test_id','H12','city1',0,''),
-			(872,'$_test_id','I15','city1',0,''),
-			(873,'$_test_id','F6','city1',0,''),
-			(874,'$_test_id','D10','city2',0,''),
-			(875,'$_test_id','D10','city1',0,''),
-			(876,'$_test_id','E11','city2',0,''),
-			(877,'$_test_id','E11','city1',0,''),
-			(878,'$_test_id','K15','city1',0,''),
-			(879,'$_test_id','E23','city1',0,''),
-			(880,'$_test_id','D2','city1',0,''),
-			(881,'$_test_id','E5','city2',0,''),
-			(882,'$_test_id','E5','city1',0,'')
-		"
+	my %dummy = (
+		'state_change_stamps' => {
+			'count' => 10,
+			'data' => 
+				"INSERT INTO state_change_stamps ( id, game_id, stamp_name, stamp_value ) VALUES
+					(52,'$_test_id','player_0',0),
+					(53,'$_test_id','player_1',0),
+					(54,'$_test_id','player_2',0),
+					(55,'$_test_id','player_3',0),
+					(56,'$_test_id','player_4',0),
+					(57,'$_test_id','player_5',0),
+					(58,'$_test_id','map',15),
+					(59,'$_test_id','market',0),
+					(60,'$_test_id','auction',0),
+					(61,'','',0)
+				",
+		},
+		
+		'state_corps' => {
+			'count' => 8,
+			'data' =>
+				"INSERT INTO state_corps ( id, game_id, corp_id, cash, trains, privates, stations, shares, par_price, current_price, current_index, current_position ) VALUES
+					(1,'$_test_id','prr',0,'','','0,40,100,100','prr,10',0,0,0,'-1,-1'),
+					(2,'$_test_id','cpr',0,'','','0,40,100,100','cpr,10',0,0,0,'-1,-1'),
+					(3,'$_test_id','nyc',0,'','','0,40,100,100','nyc,10',0,0,0,'-1,-1'),
+					(4,'$_test_id','bo',0,'','','0,40,100','bo,10',0,0,0,'-1,-1'),
+					(5,'$_test_id','bm',0,'','','0,40','bm,10',0,0,0,'-1,-1'),
+					(6,'$_test_id','nnh',0,'','','0,40','nnh,10',0,0,0,'-1,-1'),
+					(7,'$_test_id','co',0,'','','0,40,100','co,10',0,0,0,'-1,-1'),
+					(8,'$_test_id','erie',0,'','','0,40,100','erie,10',0,0,0,'-1,-1')
+				",
+		},
+		
+		'state_game' => {
+			'count' => 1,
+			'data' => 
+				"INSERT INTO state_game ( id, cash, shares, privates, trains, current_phase, next_phase, current_round, current_player, game_name, prioritydeal_player, player_count, depreciate_private, auction_players, corp_turns, new_trains ) VALUES
+					('$_test_id',9600,'','5_bo,4_ca,0_sv,1_cs,3_mh,2_dh','',-1,-1,0,5,'Test Game',5,6,0,'','','2,2,2,2,2,2')
+				",
+		},
+		
+		'state_players' => {
+			'count' => 6,
+			'data' => 
+				"INSERT INTO state_players ( id, game_id, player_id, long_name, cash, shares, privates, running, pass_flag, sold, bought ) VALUES
+					(1,'$_test_id',0,'Tom',400,'','','',0,'',''),
+					(2,'$_test_id',1,'',400,'','','',0,'',''),
+					(3,'$_test_id',2,'',400,'','','',0,'',''),
+					(4,'$_test_id',3,'',400,'','','',0,'',''),
+					(5,'$_test_id',4,'',400,'','','',0,'',''),
+					(6,'$_test_id',5,'Sam',400,'','','',0,'','')
+				",
+		},
+		
+		'state_stations' => {
+			'count' => 18,
+			'data' =>
+				"INSERT INTO state_stations ( id, game_id, space_id, station_id, slot_id, corp ) VALUES
+					(865,'$_test_id','G19','city2',0,''),
+					(866,'$_test_id','G19','city1',0,''),
+					(867,'$_test_id','H18','city2',0,''),
+					(868,'$_test_id','H18','city1',0,''),
+					(869,'$_test_id','A19','city1',0,''),
+					(870,'$_test_id','D14','city1',0,''),
+					(871,'$_test_id','H12','city1',0,''),
+					(872,'$_test_id','I15','city1',0,''),
+					(873,'$_test_id','F6','city1',0,''),
+					(874,'$_test_id','D10','city2',0,''),
+					(875,'$_test_id','D10','city1',0,''),
+					(876,'$_test_id','E11','city2',0,''),
+					(877,'$_test_id','E11','city1',0,''),
+					(878,'$_test_id','K15','city1',0,''),
+					(879,'$_test_id','E23','city1',0,''),
+					(880,'$_test_id','D2','city1',0,''),
+					(881,'$_test_id','E5','city2',0,''),
+					(882,'$_test_id','E5','city1',0,'')
+				",
+		},
+		
+		'state_tile_locations' => {
+			'count' => 93,
+			'data' =>
+				"INSERT INTO state_tile_locations ( id, game_id, space_id, tile_id, orientation ) VALUES
+					(3164,'$_test_id','E15','0',0),
+					(3165,'$_test_id','F16','-10',0),
+					(3166,'$_test_id','I11','0',0),
+					(3167,'$_test_id','E13','0',0),
+					(3168,'$_test_id','E21','0',0),
+					(3169,'$_test_id','C11','0',0),
+					(3170,'$_test_id','J2','-902',5),
+					(3171,'$_test_id','I5','0',0),
+					(3172,'$_test_id','E9','-7',4),
+					(3173,'$_test_id','G7','55',0),
+					(3174,'$_test_id','G19','-21',1),
+					(3175,'$_test_id','D24','-7',2),
+					(3176,'$_test_id','D18','0',0),
+					(3177,'$_test_id','E7','-1',0),
+					(3178,'$_test_id','F8','8',4),
+					(3179,'$_test_id','H18','-20',0),
+					(3180,'$_test_id','H16','-10',0),
+					(3181,'$_test_id','A17','-7',1),
+					(3182,'$_test_id','B18','0',0),
+					(3183,'$_test_id','C17','0',0),
+					(3184,'$_test_id','A19','-103',1),
+					(3185,'$_test_id','H8','23',1),
+					(3186,'$_test_id','B10','-10',0),
+					(3187,'$_test_id','G11','0',0),
+					(3188,'$_test_id','J8','0',0),
+					(3189,'$_test_id','B14','0',0),
+					(3190,'$_test_id','D6','0',0),
+					(3191,'$_test_id','D20','0',0),
+					(3192,'$_test_id','C19','0',0),
+					(3193,'$_test_id','D14','-102',0),
+					(3194,'$_test_id','F2','-903',5),
+					(3195,'$_test_id','D8','0',0),
+					(3196,'$_test_id','B24','-902',2),
+					(3197,'$_test_id','E3','46',2),
+					(3198,'$_test_id','F24','-3',2),
+					(3199,'$_test_id','H12','-101',0),
+					(3200,'$_test_id','I15','-11',0),
+					(3201,'$_test_id','D22','0',0),
+					(3202,'$_test_id','J12','0',0),
+					(3203,'$_test_id','G13','0',0),
+					(3204,'$_test_id','H4','63',3),
+					(3205,'$_test_id','F6','-105',0),
+					(3206,'$_test_id','J10','0',0),
+					(3207,'$_test_id','D10','-20',0),
+					(3208,'$_test_id','C15','-58',2),
+					(3209,'$_test_id','E19','-10',0),
+					(3210,'$_test_id','H6','24',1),
+					(3211,'$_test_id','I1','-901',5),
+					(3212,'$_test_id','H14','0',0),
+					(3213,'$_test_id','B22','0',0),
+					(3214,'$_test_id','G3','0',0),
+					(3215,'$_test_id','I17','0',0),
+					(3216,'$_test_id','A11','-902',1),
+					(3217,'$_test_id','D16','0',0),
+					(3218,'$_test_id','J14','-10',0),
+					(3219,'$_test_id','E17','0',0),
+					(3220,'$_test_id','E11','59',0),
+					(3221,'$_test_id','K15','-104',3),
+					(3222,'$_test_id','H2','7',4),
+					(3223,'$_test_id','C13','0',0),
+					(3224,'$_test_id','J6','0',0),
+					(3225,'$_test_id','F10','58',1),
+					(3226,'$_test_id','B16','-10',0),
+					(3227,'$_test_id','E23','-11',5),
+					(3228,'$_test_id','F4','57',5),
+					(3229,'$_test_id','C9','0',0),
+					(3230,'$_test_id','D2','-5',0),
+					(3231,'$_test_id','I7','0',0),
+					(3232,'$_test_id','G17','-2',0),
+					(3233,'$_test_id','G9','0',0),
+					(3234,'$_test_id','I13','0',0),
+					(3235,'$_test_id','I19','-3',2),
+					(3236,'$_test_id','B20','-1',0),
+					(3237,'$_test_id','F22','-10',0),
+					(3238,'$_test_id','G5','26',0),
+					(3239,'$_test_id','I9','0',0),
+					(3240,'$_test_id','F14','0',0),
+					(3241,'$_test_id','I3','16',0),
+					(3242,'$_test_id','C7','0',0),
+					(3243,'$_test_id','D4','58',5),
+					(3244,'$_test_id','H10','57',1),
+					(3245,'$_test_id','F20','-2',0),
+					(3246,'$_test_id','F18','0',0),
+					(3247,'$_test_id','B12','0',0),
+					(3248,'$_test_id','D12','0',0),
+					(3249,'$_test_id','K13','-902',4),
+					(3250,'$_test_id','G15','0',0),
+					(3251,'$_test_id','F12','0',0),
+					(3252,'$_test_id','C23','0',0),
+					(3253,'$_test_id','E5','64',4),
+					(3254,'$_test_id','J4','0',0),
+					(3255,'$_test_id','A9','-901',1),
+					(3256,'$_test_id','C21','0',0)
+				",
+		},
 	);
 	
-	$connection->simple_exec(
-		"INSERT INTO state_tile_locations ( id, game_id, space_id, tile_id, orientation ) VALUES
-			(3164,'$_test_id','E15','0',0),
-			(3165,'$_test_id','F16','-10',0),
-			(3166,'$_test_id','I11','0',0),
-			(3167,'$_test_id','E13','0',0),
-			(3168,'$_test_id','E21','0',0),
-			(3169,'$_test_id','C11','0',0),
-			(3170,'$_test_id','J2','-902',5),
-			(3171,'$_test_id','I5','0',0),
-			(3172,'$_test_id','E9','-7',4),
-			(3173,'$_test_id','G7','55',0),
-			(3174,'$_test_id','G19','-21',1),
-			(3175,'$_test_id','D24','-7',2),
-			(3176,'$_test_id','D18','0',0),
-			(3177,'$_test_id','E7','-1',0),
-			(3178,'$_test_id','F8','8',4),
-			(3179,'$_test_id','H18','-20',0),
-			(3180,'$_test_id','H16','-10',0),
-			(3181,'$_test_id','A17','-7',1),
-			(3182,'$_test_id','B18','0',0),
-			(3183,'$_test_id','C17','0',0),
-			(3184,'$_test_id','A19','-103',1),
-			(3185,'$_test_id','H8','23',1),
-			(3186,'$_test_id','B10','-10',0),
-			(3187,'$_test_id','G11','0',0),
-			(3188,'$_test_id','J8','0',0),
-			(3189,'$_test_id','B14','0',0),
-			(3190,'$_test_id','D6','0',0),
-			(3191,'$_test_id','D20','0',0),
-			(3192,'$_test_id','C19','0',0),
-			(3193,'$_test_id','D14','-102',0),
-			(3194,'$_test_id','F2','-903',5),
-			(3195,'$_test_id','D8','0',0),
-			(3196,'$_test_id','B24','-902',2),
-			(3197,'$_test_id','E3','46',2),
-			(3198,'$_test_id','F24','-3',2),
-			(3199,'$_test_id','H12','-101',0),
-			(3200,'$_test_id','I15','-11',0),
-			(3201,'$_test_id','D22','0',0),
-			(3202,'$_test_id','J12','0',0),
-			(3203,'$_test_id','G13','0',0),
-			(3204,'$_test_id','H4','63',3),
-			(3205,'$_test_id','F6','-105',0),
-			(3206,'$_test_id','J10','0',0),
-			(3207,'$_test_id','D10','-20',0),
-			(3208,'$_test_id','C15','-58',2),
-			(3209,'$_test_id','E19','-10',0),
-			(3210,'$_test_id','H6','24',1),
-			(3211,'$_test_id','I1','-901',5),
-			(3212,'$_test_id','H14','0',0),
-			(3213,'$_test_id','B22','0',0),
-			(3214,'$_test_id','G3','0',0),
-			(3215,'$_test_id','I17','0',0),
-			(3216,'$_test_id','A11','-902',1),
-			(3217,'$_test_id','D16','0',0),
-			(3218,'$_test_id','J14','-10',0),
-			(3219,'$_test_id','E17','0',0),
-			(3220,'$_test_id','E11','59',0),
-			(3221,'$_test_id','K15','-104',3),
-			(3222,'$_test_id','H2','7',4),
-			(3223,'$_test_id','C13','0',0),
-			(3224,'$_test_id','J6','0',0),
-			(3225,'$_test_id','F10','58',1),
-			(3226,'$_test_id','B16','-10',0),
-			(3227,'$_test_id','E23','-11',5),
-			(3228,'$_test_id','F4','57',5),
-			(3229,'$_test_id','C9','0',0),
-			(3230,'$_test_id','D2','-5',0),
-			(3231,'$_test_id','I7','0',0),
-			(3232,'$_test_id','G17','-2',0),
-			(3233,'$_test_id','G9','0',0),
-			(3234,'$_test_id','I13','0',0),
-			(3235,'$_test_id','I19','-3',2),
-			(3236,'$_test_id','B20','-1',0),
-			(3237,'$_test_id','F22','-10',0),
-			(3238,'$_test_id','G5','26',0),
-			(3239,'$_test_id','I9','0',0),
-			(3240,'$_test_id','F14','0',0),
-			(3241,'$_test_id','I3','16',0),
-			(3242,'$_test_id','C7','0',0),
-			(3243,'$_test_id','D4','58',5),
-			(3244,'$_test_id','H10','57',1),
-			(3245,'$_test_id','F20','-2',0),
-			(3246,'$_test_id','F18','0',0),
-			(3247,'$_test_id','B12','0',0),
-			(3248,'$_test_id','D12','0',0),
-			(3249,'$_test_id','K13','-902',4),
-			(3250,'$_test_id','G15','0',0),
-			(3251,'$_test_id','F12','0',0),
-			(3252,'$_test_id','C23','0',0),
-			(3253,'$_test_id','E5','64',4),
-			(3254,'$_test_id','J4','0',0),
-			(3255,'$_test_id','A9','-901',1),
-			(3256,'$_test_id','C21','0',0)
-		"
-	);
+	foreach my $table_name ( sort( keys( %dummy ) ) ) {
+		$connection->simple_exec( $dummy{ $table_name }->{'data'} );
+		
+		print "\nCreated test data for table $table_name ... ";
+		
+		my $count = $connection->simple_value( 0, "SELECT COUNT(*) AS value FROM $table_name" );
+			
+		if ( $dummy{ $table_name }->{'count'} > 0 ) {
+			print "created $count records ... done.";
+		}
+		else {
+			print "failed to create $count records.";
+		}			
+	}
 
 	return;
 }
@@ -312,7 +341,7 @@ sub test_Base_Objects_Connection {
 	use Base::Objects::Connection;
 
 	my $connection = Base::Objects::Connection->new( 
-		'error_callback' 	=> \&db_error,
+		'error_callback' 	=> \&show,
 		'bark_if_error'		=> 1,
 		'server'			=> $_server,
 		'database'			=> $_database,
@@ -981,11 +1010,11 @@ sub engine_testing {
 	
 	my %cases = (
 		'case 1:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '2', 'value' => '60' },
-#		'case 2:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '3', 'value' => '90' },
-#		'case 3:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '4', 'value' => '100' },
-#		'case 4:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '5', 'value' => '130' },
-#		'case 5:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '6', 'value' => '140' },
-#		'case 6:'   => { 'start' => 'D2.city1', 'corp' => 'co', 'train' => '6', 'value' => '170' },
+		'case 2:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '3', 'value' => '90' },
+		'case 3:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '4', 'value' => '100' },
+		'case 4:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '5', 'value' => '130' },
+		'case 5:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '6', 'value' => '140' },
+		'case 6:'   => { 'start' => 'D2.city1', 'corp' => 'co', 'train' => '6', 'value' => '170' },
 	);
 
 	foreach my $case_key ( sort( keys( %cases ) ) ) {

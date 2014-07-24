@@ -64,7 +64,7 @@ use warnings;
 		$self->set( \@tile_set, Rails::Objects::TileSet->new( 'connection' => $self->connection() ) );
 
 		my @records = $self->connection()->sql( "SELECT * FROM map_spaces" );
-
+		
 		foreach my $record ( @records ) {
 			my $space = Rails::Objects::MapSpace->new( 'connection' => $self->connection(), 'tile_set' => $self->tile_set() );
 			$space->parse_from_record( $record );
@@ -231,7 +231,7 @@ use warnings;
 			return 0;
 		}
 
-		print "\n*** space ($space) is defined with a value";
+#		print "\n*** space ($space) is defined with a value";
 		return $self->spaces()->{ $space }->value_of_node( $node, $high_low );
 	}
 
