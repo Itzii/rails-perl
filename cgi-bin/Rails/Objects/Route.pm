@@ -250,7 +250,7 @@ use warnings;
 	
 #		my @paths = $self->paths();
 		
-		my $text = '';
+		my $text = $self->get_limit() . '/' . $self->get_limit_right() . ' ';
 		
 		foreach my $node ( @{ $self->nodes() } ) {
 			$text .= '(' . $node . ':' . $self->node_values()->{ $node } . ') .. ';

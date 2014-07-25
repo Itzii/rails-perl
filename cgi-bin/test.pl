@@ -868,7 +868,30 @@ sub test_Rails_Objects_Tile {
 	
 	ok( defined( $tile ) && ref( $tile ) eq 'Rails::Objects::Tile', 'tile object created' );
 	
+	my @records = $connection->sql( "SELECT * FROM tiles WHERE tile_id=46" );
 	
+	ok( @records, 'tile record retrieved' );
+	
+	$tile->parse_from_record( $records[ 0 ] );
+	
+	ok( $tile->get_color() eq 'brown', 'tile color is correct' );
+	
+	ok( $tile->get_count() == 2, 'count is correct' );
+	
+	ok( $tile->get_name() eq '46', 'name is corrent' );
+	
+	my @nodes = sort( $tile->node_connects_to( 'side0' ) );
+	
+	ok( $nodes[ 0 ] eq 'side1' && $nodes[ 1 ] eq 'side3', 'node0 start connects to correct ends' );
+	
+	@nodes = sort( $tile->node_connects_to( 'side5' ) );
+	
+	ok( $nodes[ 0 ] eq 'side1' && $nodes[ 1 ] eq 'side3', 'node5 start connects to correct ends' );
+	
+	@records = $connection->sql( "SELECT * FROM tiles WHERE tile_id=57" );
+	$tile->parse_from_record( $records[ 0 ] );
+	
+	ok( $tile->value_of_node( 'city1' ) == 20, 'node value is correct' );
 	
 	
 	
@@ -888,6 +911,11 @@ sub test_Rails_Objects_TileSet {
 	
 	ok( defined( $tileset ) && ref( $tileset ) eq 'Rails::Objects::TileSet', 'tileset object created' );
 	
+	$tileset->load();
+	
+	my $tile = $tileset->tile( '46' );
+	
+	ok( $tile->get_name() eq '46', 'tileset loaded and tile retrieved' );
 	
 	
 	
@@ -931,6 +959,14 @@ sub test_Rails_Objects_Map {
 	ok( defined( $map ) && ref( $map ) eq 'Rails::Objects::Map', 'map object created' );
 	
 	$map->load_state( $_test_id );
+	
+	ok( $map->space( 'F2' )->get_tile_id() eq '-903', 'tile id retrieved from space' );
+	
+	my @nodes = sort( $map->node_connects_to( 'E3.side1' ) );
+	my @test_list = ( 'E3.side3','E3.side5','E5.side4' );
+	
+	ok( @nodes ~~ @test_list, 'nodes connect to correct nodes' );
+	
 	
 	
 	
@@ -1015,6 +1051,8 @@ sub engine_testing {
 		'case 4:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '5', 'value' => '130' },
 		'case 5:'   => { 'start' => 'H10.city1', 'corp' => 'bo', 'train' => '6', 'value' => '140' },
 		'case 6:'   => { 'start' => 'D2.city1', 'corp' => 'co', 'train' => '6', 'value' => '170' },
+		'case 7:'	=> { 'start' => 'F4.city1', 'corp' => 'bo', 'train' => '6', 'value' => '170' },
+		'case 8:'	=> { 'start' => 'F2.ob_chicago', 'corp' => 'bo', 'train' => '6', 'value' => '170' },
 	);
 
 	foreach my $case_key ( sort( keys( %cases ) ) ) {

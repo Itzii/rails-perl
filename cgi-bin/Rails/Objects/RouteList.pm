@@ -34,6 +34,8 @@ use overload
 		my $self	= shift;
 		my $route	= shift;
 		
+		print "\n++ adding route : " . $route . " : " . $route->as_text();
+		
 		push( @{ $routes[ $$self ] }, $route );
 				
 		return;
@@ -91,28 +93,38 @@ use overload
 		
 		my $route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
 		
-#		print "\n*** adding note: $node, " . $self->fullmap()->value_of_node( $node, $high_low );
+#		print "\n+ Testing Routes";
 		
 		$route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
 		
 		$self->add_route( $route );
 		
-		if ( $limit > 2 ) {
-			my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => 2 );
-			$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
-			$self->add_route( $new_route );
+		if ( $limit != -1 ) {
+			foreach my $t_limit ( 0 .. $limit ) {
+				my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => $t_limit );
+				$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
+				$self->add_route( $new_route );
+			}
 		}
 		
-		if ( $limit > 4 ) {
-			my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => 3 );
-			$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
-			$self->add_route( $new_route );
-		}
+#		if ( $limit > 2 ) {
+#			my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => 2 );
+#			$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
+#			$self->add_route( $new_route );
+#		}
 		
+#		if ( $limit > 4 ) {
+#			my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => 3 );
+#			$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
+#			$self->add_route( $new_route );
+#		}
+
 		$self->extend_routes();
 		
 		my @final = ();
 		
+		$self->sort_routes();
+
 		foreach my $t_route ( @{ $self->routes() } ) {
 		
 			my $dup_flag = 0;
@@ -154,11 +166,16 @@ use overload
 				$finished = 1;
 				
 				if ( $route->get_finished() == 0 ) {
+				
+#					print "\n : Extending route: " . $route . " " . $route->as_text();
+				
 					$self->extend_single_route( $route );				
 					$finished = 0;
 				}
 			}		
-		}		
+		}	
+
+#		print "\n- Finished Extending Routes";
 		
 		return;
 	}
@@ -211,6 +228,7 @@ use overload
 		}
 		
 		$self->add_node_to_route( $route, $spur );
+#		print "\n    > adding node: " . $spur;
 		
 		return;		
 	}	
