@@ -34,7 +34,7 @@ use overload
 		my $self	= shift;
 		my $route	= shift;
 		
-		print "\n++ adding route : " . $route . " : " . $route->as_text();
+#		print "\n++ adding route : " . $route . " : " . $route->as_text();
 		
 		push( @{ $routes[ $$self ] }, $route );
 				
@@ -93,59 +93,79 @@ use overload
 		
 		my $route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
 		
-#		print "\n+ Testing Routes";
+		print "\n+ Testing Routes";
 		
 		$route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
 		
 		$self->add_route( $route );
-		
-		if ( $limit != -1 ) {
-			foreach my $t_limit ( 0 .. $limit ) {
-				my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => $t_limit );
-				$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
-				$self->add_route( $new_route );
-			}
-		}
-		
-#		if ( $limit > 2 ) {
-#			my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => 2 );
-#			$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
-#			$self->add_route( $new_route );
-#		}
-		
-#		if ( $limit > 4 ) {
-#			my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit, 'limit_right' => 3 );
-#			$new_route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
-#			$self->add_route( $new_route );
-#		}
 
 		$self->extend_routes();
 		
-		my @final = ();
+		# routes now should contain all paths leading out from node up to a limit of $limit distance.
+		
+		# now we're going to join each possible pair head-to-tail to create all the possible routes
+		# with a max length of 2x$limit with the starting node somewhere in the middle.
 		
 		$self->sort_routes();
 
-		foreach my $t_route ( @{ $self->routes() } ) {
-		
-			my $dup_flag = 0;
-		
-			foreach my $t_final ( @final ) {
-				if ( @{ $t_final->nodes() } ~~ reverse( @{ $t_route->nodes() } ) ) {
-					$dup_flag = 1;
-					last;
-				}
+		foreach my $current_route ( @{ $self->routes() } ) {
+			print "\n   " . $current_route->as_text();
+		}
 
-				if ( @{ $t_final->nodes() } ~~ @{ $t_route->nodes() } ) {
-					$dup_flag = 1;
-					last;
+		return;
+		
+		my @temp_routes = ();
+		
+		foreach my $current_route ( @{ $self->routes() } ) {
+		
+			foreach my $adding_route ( @{ $self->routes() } ) {
+				
+				if ( $current_route->contains_common_node( $adding_route, 1 ) ) {
+					next;
 				}
+				
+				my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
+				$new_route->copy_from( $current_route );
+				$new_route->join_route( $adding_route );
+				
+				push( @temp_routes, $new_route );
 			}
+		}
+
+
+		# now we add all subsets of each route that are no longer than limit but still include the original node
+		# and add them back to the list
+		
+		my @final = ();
+		my $good_flag = 0;
+		my $sane = 5000;
+		
+		foreach my $current_route ( @temp_routes ) {
 			
-			if ( $dup_flag == 0 ) {
-				push( @final, $t_route );
-			}		
+			my $start_index = 0;
+			
+			do {
+				my $sub_route = $current_route->sub_route( $start_index );
+				
+				$good_flag = $sub_route->contains_node( $node );
+				
+				if ( $sub_route->stop_count() < 2 ) {
+					$good_flag = 0;
+				}
+				
+				if ( $good_flag ) {
+					push( @final, $sub_route );
+				}
+				
+				$start_index++;				
+				$sane--;
+				
+			} while ( $good_flag && $sane > 0 );
+			
 		}
 		
+		print "\n+  Sorting Routes";
+
 		@{ $self->routes() } = @final;
 		
 		$self->sort_routes();
@@ -212,7 +232,7 @@ use overload
 		}
 		
 		unless ( @new_spurs ) {
-			$route->finish_end();
+			$route->finish();
 			return;
 		}
 		
@@ -244,14 +264,14 @@ use overload
 			my ( $junk, $ob_location ) = split( /\./, $node );
 			
 			$route->add_node( $ob_location, $self->fullmap()->value_of_node( $node, $self->fullmap()->high_low() ) );
-			$route->finish_end();
+			$route->finish();
 		}
 		else {
 		
 			$route->add_node( $node, $self->fullmap()->value_of_node( $node, $self->fullmap()->high_low() ) );
 			
 			if ( $self->fullmap()->can_corp_trace_through_node( $node, $self->get_corp() ) == 0 ) {
-				$route->finish_end();
+				$route->finish();
 			}
 		}
 		

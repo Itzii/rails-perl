@@ -13,9 +13,6 @@ use warnings;
 	my @nodes				:Field	:Default( undef )	:Get(nodes);
 	my @node_values			:Field	:Default( undef )	:Get(node_values);
 	my @finished			:Field	:Default( 0 )		:Set(set_finished);
-	
-	my @finished_right		:Field	:Default( 0 )		:Std(finished_right);
-	my @limit_right			:Field	:Default( -1 )		:Std(limit_right)	:Arg('limit_right');
 	my @limit				:Field	:Default( -1 )		:Std(limit)			:Arg('limit');
 	
 	
@@ -100,13 +97,26 @@ use warnings;
 	#############################################
 
 	sub contains_node {
-		my $self		= shift;
-		my $new_node	= shift;
+		my $self				= shift;
+		my $new_node			= shift;
+		my $flag_ignore_first	= shift; # optional 0
 		
+		unless ( defined( $flag_ignore_first ) ) {
+			$flag_ignore_first = 0;
+		}
+		
+		my $count = 0;		
 		foreach my $node ( @{ $self->nodes() } ) {
+		
+			if ( $count == 0 && $flag_ignore_first ) {
+				next;
+			}
+		
 			if ( $node eq $new_node ) {
 				return 1;
 			}
+			
+			$count++;
 		}
 		
 		return 0;
@@ -116,10 +126,6 @@ use warnings;
 
 	sub last_node {
 		my $self		= shift;
-		
-		if ( $self->going_left() == 1 ) {
-			return $self->nodes()->[ 0 ];
-		}
 		
 		return $self->nodes()->[ -1 ];
 	}
@@ -133,43 +139,17 @@ use warnings;
 			return '';
 		}
 		
-		if ( $self->going_left() == 1 ) {
-			return $self->nodes()->[ 1 ];
-		}
-		
 		return $self->nodes()->[ -2 ];
 	}	
 
 	#############################################
 
-	sub going_left {
+	sub finish {
 		my $self		= shift;
 		
-		if ( $self->get_finished_right() == 1 ) {
-			return 1;
-		}
+		$self->set_finished( 1 );
 		
-		if ( 
-			$self->stop_count() >= $self->get_limit_right() 
-			&& $self->get_limit_right() > -1 
-		) {
-			return 1;
-		}
-		
-		return 0;
-	}
-
-	#############################################
-
-	sub finish_end {
-		my $self		= shift;
-		
-		if ( $self->going_left() == 0 ) {
-			$self->set_finished_right( 1 );
-		}
-		else {
-			$self->set_finished( 1 );
-		}
+		return;		
 	}
 
 	#############################################
@@ -195,13 +175,7 @@ use warnings;
 		my $node		= shift;
 		my $value		= shift;
 				
-		if ( $self->going_left() == 1 ) {
-			unshift( @{ $self->nodes() }, $node );
-		}
-		else {
-			push( @{ $self->nodes() }, $node );
-		}
-		
+		push( @{ $self->nodes() }, $node );
 		$self->node_values()->{ $node } = $value;
 			
 		return;
@@ -217,8 +191,7 @@ use warnings;
 			$self->add_node( $node, $other->node_values()->{ $node } );
 		}
 		
-		$self->set_finished_right( $other->get_finished_right() );
-		$self->set_limit_right( $other->get_limit_right() );
+		$self->set_finished( $other->get_finished() );
 		$self->set_limit( $other->get_limit() );
 		
 		return;
@@ -245,12 +218,44 @@ use warnings;
 
 	#############################################
 
+	sub contains_common_node {
+		my $self				= shift;
+		my $other				= shift; 
+		my $flag_ignore_first	= shift; # optional 0
+		
+		unless ( defined( $other ) ) {
+			return 0;
+		}
+		
+		unless ( defined( $flag_ignore_first ) ) {
+			$flag_ignore_first = 0;
+		}
+	
+		my $count = 0;	
+		foreach my $node ( $self->nodes() ) {
+		
+			if ( $count == 0 && $flag_ignore_first ) {
+				next;
+			}
+			
+			if ( $other->contains_node( $node, $flag_ignore_first ) == 1 ) {
+				return 1;
+			}
+			
+			$count++;
+		}
+		
+		return 0;
+	}
+
+	#############################################
+
 	sub as_text {
 		my $self		= shift;
 	
 #		my @paths = $self->paths();
 		
-		my $text = $self->get_limit() . '/' . $self->get_limit_right() . ' ';
+		my $text = $self->get_limit() . ' ';
 		
 		foreach my $node ( @{ $self->nodes() } ) {
 			$text .= '(' . $node . ':' . $self->node_values()->{ $node } . ') .. ';
@@ -264,6 +269,59 @@ use warnings;
 		return $text . ' [' . $self->get_value() . ']{' . $self->stop_count() . '}';		
 	}
 
+	#############################################
+
+	sub join_route {
+		my $self		= shift;
+		my $new_route	= shift;
+		
+		$self->finish();
+		
+		my @new_nodes = @{ $new_route->nodes() };
+		
+		if ( $self->contains_node( $new_nodes[ 0 ] ) ) {
+			shift( @new_nodes );
+		}
+		
+		foreach my $node ( @new_nodes ) {
+			$self->add_node( $node, $new_route->node_values()->{ $node } );
+		}
+		
+		return;
+	}		
+		
+	#############################################
+
+	sub sub_route {
+		my $self		= shift;
+		my $start_index	= shift;
+		
+		my $sub_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $self->get_limit() );
+		
+		my $count = -1;
+		
+		foreach my $node ( @{ $self->nodes() } ) {
+		
+			my $value = $self->node_values()->{ $node }; 
+		
+			if ( $value > 0 ) {
+				$count++;
+			}
+			
+			if ( $count < $start_index ) {
+				next;
+			}
+			
+			$sub_route->add_node( $node, $value );
+			
+			if ( $count + 1 == $start_index + $self->get_limit() ) {
+				last;			
+			}
+		}
+		
+		return $sub_route;
+	}	
+	
 	#############################################
 	#############################################
 	
