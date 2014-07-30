@@ -1,4 +1,4 @@
 log_path            = /home/dan/rails-perl/log
 template_dir        = /home/dan/rails-perl/httpdocs/templates
 font_dir            = /home/dan/rails-perl/httpdocs/fonts
-database			= /home/dan/rails-perl/cgi-bin/rails.sqlite
+database			= /home/dan/rails-perl/cgi-bin/test.sqlite

@@ -108,14 +108,14 @@ use warnings;
 		my $count = 0;		
 		foreach my $node ( @{ $self->nodes() } ) {
 		
-			if ( $count == 0 && $flag_ignore_first ) {
-				next;
-			}
-		
-			if ( $node eq $new_node ) {
-				return 1;
-			}
+			if ( $count > 0 || $flag_ignore_first == 0 ) {
 			
+				if ( $node eq $new_node ) {
+					return 1;
+				}
+				
+			}
+
 			$count++;
 		}
 		
@@ -232,16 +232,14 @@ use warnings;
 		}
 	
 		my $count = 0;	
-		foreach my $node ( $self->nodes() ) {
+		foreach my $node ( @{ $self->nodes() } ) {
 		
-			if ( $count == 0 && $flag_ignore_first ) {
-				next;
+			if ( $count > 0 || $flag_ignore_first == 0 ) {
+				if ( $other->contains_node( $node, $flag_ignore_first ) == 1 ) {
+					return 1;
+				}
 			}
-			
-			if ( $other->contains_node( $node, $flag_ignore_first ) == 1 ) {
-				return 1;
-			}
-			
+
 			$count++;
 		}
 		
@@ -283,6 +281,10 @@ use warnings;
 			shift( @new_nodes );
 		}
 		
+		my @old_nodes = @{ $self->nodes() };
+		@old_nodes = reverse( @old_nodes );
+		$self->set( \@nodes, \@old_nodes );
+		
 		foreach my $node ( @new_nodes ) {
 			$self->add_node( $node, $new_route->node_values()->{ $node } );
 		}
@@ -308,14 +310,12 @@ use warnings;
 				$count++;
 			}
 			
-			if ( $count < $start_index ) {
-				next;
-			}
-			
-			$sub_route->add_node( $node, $value );
-			
-			if ( $count + 1 == $start_index + $self->get_limit() ) {
-				last;			
+			unless ( $count < $start_index ) {
+				$sub_route->add_node( $node, $value );
+				
+				if ( $count + 1 == $start_index + $self->get_limit() ) {
+					return $sub_route;			
+				}
 			}
 		}
 		

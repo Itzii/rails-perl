@@ -170,7 +170,7 @@ use warnings;
 		my $max_length	= shift;
 		my $corp_tag	= shift;
 		
-		if ( $max_length eq 'D' ) {
+		if ( lc( $max_length ) eq 'd' ) {
 			$max_length = -1;
 		}
 		

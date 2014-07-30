@@ -93,7 +93,7 @@ use overload
 		
 		my $route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
 		
-		print "\n+ Testing Routes";
+#		print "\n+ Testing Routes - starting at node: " . $node;
 		
 		$route->add_node( $node, $self->fullmap()->value_of_node( $node, $high_low ) );
 		
@@ -108,11 +108,11 @@ use overload
 		
 		$self->sort_routes();
 
-		foreach my $current_route ( @{ $self->routes() } ) {
-			print "\n   " . $current_route->as_text();
-		}
+#		foreach my $current_route ( @{ $self->routes() } ) {
+#			print "\n   " . $current_route->as_text();
+#		}
 
-		return;
+#		return;
 		
 		my @temp_routes = ();
 		
@@ -120,15 +120,14 @@ use overload
 		
 			foreach my $adding_route ( @{ $self->routes() } ) {
 				
-				if ( $current_route->contains_common_node( $adding_route, 1 ) ) {
-					next;
+				unless ( $current_route->contains_common_node( $adding_route, 1 ) ) {
+				
+					my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
+					$new_route->copy_from( $current_route );
+					$new_route->join_route( $adding_route );
+					
+					push( @temp_routes, $new_route );
 				}
-				
-				my $new_route = Rails::Objects::Route->new( 'map' => $self->fullmap(), 'limit' => $limit );
-				$new_route->copy_from( $current_route );
-				$new_route->join_route( $adding_route );
-				
-				push( @temp_routes, $new_route );
 			}
 		}
 
@@ -164,7 +163,7 @@ use overload
 			
 		}
 		
-		print "\n+  Sorting Routes";
+#		print "\n+  Sorting Routes";
 
 		@{ $self->routes() } = @final;
 		
@@ -182,8 +181,10 @@ use overload
 		
 		while ( $finished == 0 ) {
 		
+			$finished = 1;
+		
 			foreach my $route ( @{ $self->routes() } ) {
-				$finished = 1;
+#				$finished = 1;
 				
 				if ( $route->get_finished() == 0 ) {
 				

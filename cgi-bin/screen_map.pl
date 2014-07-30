@@ -9,7 +9,7 @@ $| = 1;
 
 #############################################################################
 
-my $screen = Rails::Screens::Map->new();
+my $screen = Rails::Screens::Map->new( 'config' => 'test_config' );
 
 my $result = $screen->process_action();
 

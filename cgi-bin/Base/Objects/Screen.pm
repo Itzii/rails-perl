@@ -24,6 +24,7 @@ use warnings;
 	my @temp_fields		:Field;
 	my @connection		:Field		:Default( undef )	:Get(connection) :Set(set_connection)	:Arg(connection);
 	my @config			:Field		:Default( undef )	:Get(config);
+	my @config_file		:Field		:Default( '' );
 	
 	my %init_args :InitArgs = (
         'config' => undef,
@@ -36,14 +37,17 @@ use warnings;
 		my $args	= shift;
 		
 		my $config = undef;
+		my $config_file = 'config';
 		
 		if ( defined( $args->{'config'} ) ) {
 			$config = Config::Simple->new( $args->{'config'} );
+			$config_file = $args->{'config'};
 		}
 		else {
 			$config = Config::Simple->new( 'config' );
 		}
 		
+		$self->set( \@config_file, $config_file );
 		$self->set( \@config, $config );
 
 		unless ( defined( $self->connection() ) ) {
@@ -162,6 +166,7 @@ use warnings;
 		$template->param( 'host' => $ENV{'HTTP_HOST'} );
 		$template->param( 'script' => $ENV{'SCRIPT_NAME'} );
 		$template->param( 'stamp' => $self->get_stamp_value() );
+		$template->param( 'config' => $config_file[ $$self ] );
 		
 		my $output = $template->output;
 		
